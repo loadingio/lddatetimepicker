@@ -5,14 +5,16 @@ Vanilla Date/Time picker.
 
 ## Usage
 
-install via npm:
+install via npm, along with required libraries:
 
-    npm install --save lddatetimepicker
+    npm install --save lddatetimepicker @loadingio/debounce.js dayjs
 
 
 include required js / css:
 
     <link rel="stylesheet" type="text/css" href="dist/index.min.css">
+    <script type="text/javascript" src="path-to/debounce.js"></script>
+    <script type="text/javascript" src="path-to-day.js"></script>
     <script type="text/javascript" src="dist/index.min.js"></script>
 
 
