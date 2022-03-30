@@ -1,13 +1,19 @@
 {
   "name": "lddatetimepicker",
   "version": "0.0.1",
-  "description": "",
+  "description": "vanilla date/time picker",
   "browser": "dist/index.min.js",
   "main": "dist/index.js",
+  "files": ["dist/**/*"],
   "scripts": {
     "start": "npx server -r web -o true"
   },
-  "keywords": [],
+  "homepage": "https://github.com/loadingio/lddatetimepicker",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loadingio/lddatetimepicker"
+  },
+  "keywords": ["date","time","datetime","datepicker","datetimepicker"],
   "author": "zbryikt",
   "license": "MIT",
   "devDependencies": {
