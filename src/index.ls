@@ -1,10 +1,10 @@
 html = '''
 <div class="lddtp">
   <div class="lddtp-h">
-    <div data-action="-">&#x25c0;</div>
+    <div class="lddtp-a" data-action="-"></div>
     <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>
     <div class="lddtp-f"><input class="lddtp-year-sel" type="number"/></div>
-    <div data-action="+">&#x25ba;</div>
+    <div class="lddtp-a" data-action="+"></div>
   </div>
   <div class="lddtp-ds">
   </div>
@@ -78,7 +78,7 @@ lddatetimepicker = (opt = {})->
       hour: r.querySelector('.lddtp-hour-sel')
       minute: r.querySelector('.lddtp-minute-sel')
 
-  @n.t.style.display = if @_enabled.time => \block else \none
+  @n.t.style.display = if @_enabled.time => '' else \none
   @months = <[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]>
   @wdays = <[SUN MON TUE WED THR FRI SAT]>
 

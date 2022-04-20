@@ -12,6 +12,17 @@
     flex: 1 0 auto
     text-align: center
 
+.lddtp-a
+  &:before, &:after
+    display: block
+.lddtp-a:first-child
+  &:before
+    content: "\25c0"
+.lddtp-a:last-child
+  &:before
+    content: "\25ba"
+
+
 .lddtp
   div
     user-select: none

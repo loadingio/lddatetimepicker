@@ -1,6 +1,6 @@
 (function(){
   var html, lddatetimepicker;
-  html = '<div class="lddtp">\n  <div class="lddtp-h">\n    <div data-action="-">&#x25c0;</div>\n    <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>\n    <div class="lddtp-f"><input class="lddtp-year-sel" type="number"/></div>\n    <div data-action="+">&#x25ba;</div>\n  </div>\n  <div class="lddtp-ds">\n  </div>\n  <div class="lddtp-t">\n    <div class="lddtp-f"><select class="lddtp-hour-sel"></select></div>\n    <div><b>:</b></div>\n    <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>\n  </div>\n</div>';
+  html = '<div class="lddtp">\n  <div class="lddtp-h">\n    <div class="lddtp-a" data-action="-"></div>\n    <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>\n    <div class="lddtp-f"><input class="lddtp-year-sel" type="number"/></div>\n    <div class="lddtp-a" data-action="+"></div>\n  </div>\n  <div class="lddtp-ds">\n  </div>\n  <div class="lddtp-t">\n    <div class="lddtp-f"><select class="lddtp-hour-sel"></select></div>\n    <div><b>:</b></div>\n    <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>\n  </div>\n</div>';
   lddatetimepicker = function(opt){
     var div, r, ref$, x$, _handler, this$ = this;
     opt == null && (opt = {});
@@ -91,7 +91,7 @@
         minute: r.querySelector('.lddtp-minute-sel')
       }
     };
-    this.n.t.style.display = this._enabled.time ? 'block' : 'none';
+    this.n.t.style.display = this._enabled.time ? '' : 'none';
     this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     this.wdays = ['SUN', 'MON', 'TUE', 'WED', 'THR', 'FRI', 'SAT'];
     this.n.ds.innerHTML = [0, 1, 2, 3, 4, 5, 6].map(function(w){

@@ -272,30 +272,31 @@ pug_html = pug_html + "\u003Chead\u003E";
 pug_mixins["css"]([
       {name: "bootstrap", path: "dist/css/bootstrap.min.css"},
       {name: "@loadingio/bootstrap.ext"},
-      {name: "lddatetimepicker", version: "dev"}
+      {name: "lddatetimepicker", version: "dev"},
+      {name: "lddatetimepicker", version: "dev", path: "theme.min.css"}
     ]);
 pug_html = pug_html + "\u003C\u002Fhead\u003E";
-;pug_debug_line = 12;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
-pug_html = pug_html + "\u003Cbody\u003E";
 ;pug_debug_line = 13;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
-pug_html = pug_html + "\u003Cdiv class=\"w-1024 rwd mx-auto my-4\"\u003E";
+pug_html = pug_html + "\u003Cbody\u003E";
 ;pug_debug_line = 14;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
-pug_html = pug_html + "\u003Cdiv class=\"border rounded mx-auto\" style=\"position:relative;box-shadow:inset 0 2px 4px rgba(0,0,0,.1);width:600px;height:600px;overflow:scroll\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"w-1024 rwd mx-auto my-4\"\u003E";
 ;pug_debug_line = 15;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
-pug_html = pug_html + "\u003Cdiv class=\"p-4\" style=\"width:1000px;height:1000px;background:#f1f2f3\"\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"border rounded mx-auto\" style=\"position:relative;box-shadow:inset 0 2px 4px rgba(0,0,0,.1);width:600px;height:600px;overflow:scroll\"\u003E";
 ;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+pug_html = pug_html + "\u003Cdiv class=\"p-4\" style=\"width:1000px;height:1000px;background:#f1f2f3\"\u003E";
+;pug_debug_line = 17;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
 pug_html = pug_html + "\u003Cinput class=\"form-control\" style=\"position:absolute;top:400px;left:350px;width:250px\" ld=\"input\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
-;pug_debug_line = 18;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
 pug_mixins["script"]([
       {name: "@loadingio/ldquery"},
       {name: "@loadingio/debounce.js"},
       {name: "dayjs", path: "dayjs.min.js"},
       {name: "lddatetimepicker", version: "dev"}
     ]);
-;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
 pug_html = pug_html + "\u003Cscript type=\"module\"\u003E";
-;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
-pug_html = pug_html + "var lddtp;lddtp=new lddatetimepicker({host:ld$.find(\"input\",0),time:false});\u003C\u002Fscript\u003E\u003C\u002Fbody\u003E\u003C\u002Fhtml\u003E";
+;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+pug_html = pug_html + "var lddtp;lddtp=new lddatetimepicker({host:ld$.find(\"input\",0),time:true});\u003C\u002Fscript\u003E\u003C\u002Fbody\u003E\u003C\u002Fhtml\u003E";
     }.call(this, "Array" in locals_for_with ?
         locals_for_with.Array :
         typeof Array !== 'undefined' ? Array : undefined, "JSON" in locals_for_with ?
