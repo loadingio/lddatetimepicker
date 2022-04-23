@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.0.4
+
+ - update widget based on initial value of host if available
+
+
 ## v0.0.3
 
  - add `isOn` API for checking if dialog is active or not

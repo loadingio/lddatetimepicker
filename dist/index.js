@@ -2,7 +2,7 @@
   var html, lddatetimepicker;
   html = '<div class="lddtp">\n  <div class="lddtp-h">\n    <div class="lddtp-a" data-action="-"></div>\n    <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>\n    <div class="lddtp-f"><input class="lddtp-year-sel" type="number"/></div>\n    <div class="lddtp-a" data-action="+"></div>\n  </div>\n  <div class="lddtp-ds">\n  </div>\n  <div class="lddtp-t">\n    <div class="lddtp-f"><select class="lddtp-hour-sel"></select></div>\n    <div><b>:</b></div>\n    <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>\n  </div>\n</div>';
   lddatetimepicker = function(opt){
-    var div, r, ref$, x$, _handler, this$ = this;
+    var div, r, ref$, x$, _handler, e, this$ = this;
     opt == null && (opt = {});
     this.opt = opt;
     this._enabled = {
@@ -145,7 +145,12 @@
       this.host.addEventListener('input', _handler);
     }
     if (this.host && this.host.value) {
-      this.value(this.host.value);
+      try {
+        this.host.value = dayjs(this.host.value).format('YYYY-MM-DDTHH:mm:ssZ');
+        this.value(this.host.value);
+      } catch (e$) {
+        e = e$;
+      }
     } else {
       this.update();
     }

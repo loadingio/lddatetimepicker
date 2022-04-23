@@ -118,7 +118,11 @@ lddatetimepicker = (opt = {})->
       catch e
     @host.addEventListener \change, _handler
     @host.addEventListener \input, _handler
-  if @host and @host.value => @value @host.value
+  if @host and @host.value =>
+    try
+      @host.value = dayjs(@host.value).format('YYYY-MM-DDTHH:mm:ssZ')
+      @value @host.value
+    catch e
   else @update!
 
   @
