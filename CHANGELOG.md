@@ -1,6 +1,6 @@
 # Change Logs
 
-## v0.0.3 (upcoming)
+## v0.0.3
 
  - add `isOn` API for checking if dialog is active or not
  - handle key event only if dialog is on
