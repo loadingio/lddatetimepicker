@@ -254,7 +254,7 @@
       }
     },
     update: function(now){
-      var ref$, y, m, start, ny, nm, nd, ty, tm, td, sy, sm, sd;
+      var ref$, y, m, start, ny, nm, nd, ty, tm, td, sy, sm, sd, ov, nv;
       now = now || this.cur;
       ref$ = [now.year(), now.month()], y = ref$[0], m = ref$[1];
       now = dayjs(new Date(now.year(), now.month(), 1));
@@ -283,7 +283,12 @@
         return n.classList.toggle('selected', sy === dy && sm === dm && sd === dd);
       });
       if (this.host) {
-        return this.host.value = this.value();
+        ov = this.host.value;
+        nv = this.value();
+        this.host.value = nv;
+        if (ov !== nv) {
+          return this.fire('change', nv);
+        }
       }
     },
     value: function(v){

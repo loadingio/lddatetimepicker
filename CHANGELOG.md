@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.0.5
+
+ - support `change` event when value changed.
+
+
 ## v0.0.4
 
  - update widget based on initial value of host if available

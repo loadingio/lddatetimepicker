@@ -180,7 +180,6 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
     c.style.transform = "translate(#{x}px, #{y}px)"
     c.style <<< top: 0, left: 0
 
-
   update: (now) ->
     now = now or @cur
     [y,m] = [now.year!, now.month!]
@@ -201,11 +200,14 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
       n.classList.toggle \dim, (d.month! != m)
       n.classList.toggle \today, (ty == dy and tm == dm and td == dd)
       n.classList.toggle \selected, (sy == dy and sm == dm and sd == dd)
-    if @host => @host.value = @value!
+    if @host =>
+      ov = @host.value
+      nv = @value!
+      @host.value = nv
+      if ov != nv => @fire \change, nv
   value: (v) ->
     if !arguments.length =>
       if @_enabled.time =>
-        #ret = dayjs new Date( @sel.year!, @sel.month!, @sel.date!, @sel.hour!, @sel.minute! )
         ret = dayjs new Date( @sel.year!, @sel.month!, @sel.date!, @sel.hour!, @sel.minute! )
         return ret.format('YYYY-MM-DDTHH:mm:ssZ')
       else return dayjs(new Date( @sel.year!, @sel.month!, @sel.date!)).format('YYYY-MM-DD')
