@@ -21,7 +21,8 @@ lddatetimepicker = (opt = {})->
   @_enabled = time: !(opt.time?) or opt.time
   @evthdr = {}
   @hdr =
-    mouseup: ~>
+    mouseup: (evt) ~>
+      if evt.target == @host => return
       @root.classList.toggle \active, false 
       document.removeEventListener \mouseup, @hdr.mouseup
       document.removeEventListener \keydown, @hdr.keydown
@@ -44,9 +45,7 @@ lddatetimepicker = (opt = {})->
   if opt.host =>
     @host = if typeof(opt.host) == \string => document.querySelector(opt.host) else opt.host
     @host.parentNode.insertBefore div, opt.host.nextSibling
-    @host.addEventListener \mouseup, (evt) ~>
-      evt.stopPropagation!
-      @toggle!
+    @host.addEventListener \mouseup, (evt) ~> @toggle!
 
   else document.body.appendChild div 
   div.innerHTML = html

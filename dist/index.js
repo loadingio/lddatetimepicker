@@ -10,7 +10,10 @@
     };
     this.evthdr = {};
     this.hdr = {
-      mouseup: function(){
+      mouseup: function(evt){
+        if (evt.target === this$.host) {
+          return;
+        }
         this$.root.classList.toggle('active', false);
         document.removeEventListener('mouseup', this$.hdr.mouseup);
         return document.removeEventListener('keydown', this$.hdr.keydown);
@@ -50,7 +53,6 @@
         : opt.host;
       this.host.parentNode.insertBefore(div, opt.host.nextSibling);
       this.host.addEventListener('mouseup', function(evt){
-        evt.stopPropagation();
         return this$.toggle();
       });
     } else {

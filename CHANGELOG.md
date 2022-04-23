@@ -9,7 +9,7 @@
  - update ui also when hour / minute change
  - fix bug: hour / minute don't work
  - support enter / escape to close
-
+ - let dialog be mutual exclusive
 
 ## v0.0.2
 
