@@ -14,7 +14,12 @@ html
     .w-1024.rwd.mx-auto.my-4
       .border.rounded.mx-auto(style="position:relative;box-shadow:inset 0 2px 4px rgba(0,0,0,.1);width:600px;height:600px;overflow:scroll")
         .p-4(style="width:1000px;height:1000px;background:#f1f2f3")
-          input.form-control(style="position:absolute;top:400px;left:350px;width:250px",ld="input")
+          .form-group.mb-4(style="position:absolute;top:400px;left:350px;width:250px")
+            label Datetime
+            input.form-control(ld="datetime")
+          .form-group(style="position:absolute;top:500px;left:350px;width:250px")
+            label Date
+            input.form-control(ld="date")
 
     +script([
       {name: "@loadingio/ldquery"},

@@ -285,18 +285,32 @@ pug_html = pug_html + "\u003Cdiv class=\"border rounded mx-auto\" style=\"positi
 ;pug_debug_line = 16;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
 pug_html = pug_html + "\u003Cdiv class=\"p-4\" style=\"width:1000px;height:1000px;background:#f1f2f3\"\u003E";
 ;pug_debug_line = 17;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
-pug_html = pug_html + "\u003Cinput class=\"form-control\" style=\"position:absolute;top:400px;left:350px;width:250px\" ld=\"input\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+pug_html = pug_html + "\u003Cdiv class=\"form-group mb-4\" style=\"position:absolute;top:400px;left:350px;width:250px\"\u003E";
+;pug_debug_line = 18;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+pug_html = pug_html + "\u003Clabel\u003E";
+;pug_debug_line = 18;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+pug_html = pug_html + "Datetime\u003C\u002Flabel\u003E";
 ;pug_debug_line = 19;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+pug_html = pug_html + "\u003Cinput class=\"form-control\" ld=\"datetime\"\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 20;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+pug_html = pug_html + "\u003Cdiv class=\"form-group\" style=\"position:absolute;top:500px;left:350px;width:250px\"\u003E";
+;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+pug_html = pug_html + "\u003Clabel\u003E";
+;pug_debug_line = 21;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+pug_html = pug_html + "Date\u003C\u002Flabel\u003E";
+;pug_debug_line = 22;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+pug_html = pug_html + "\u003Cinput class=\"form-control\" ld=\"date\"\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E\u003C\u002Fdiv\u003E";
+;pug_debug_line = 24;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
 pug_mixins["script"]([
       {name: "@loadingio/ldquery"},
       {name: "@loadingio/debounce.js"},
       {name: "dayjs", path: "dayjs.min.js"},
       {name: "lddatetimepicker", version: "dev"}
     ]);
-;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
 pug_html = pug_html + "\u003Cscript type=\"module\"\u003E";
-;pug_debug_line = 25;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
-pug_html = pug_html + "var lddtp;lddtp=new lddatetimepicker({host:ld$.find(\"input\",0),time:true});\u003C\u002Fscript\u003E\u003C\u002Fbody\u003E\u003C\u002Fhtml\u003E";
+;pug_debug_line = 30;pug_debug_filename = "src\u002Fpug\u002Findex.pug";
+pug_html = pug_html + "var lddtp1,lddtp2;lddtp1=new lddatetimepicker({host:ld$.find(\"[ld='datetime']\",0),time:true});lddtp2=new lddatetimepicker({host:ld$.find(\"[ld='date']\",0),time:false});\u003C\u002Fscript\u003E\u003C\u002Fbody\u003E\u003C\u002Fhtml\u003E";
     }.call(this, "Array" in locals_for_with ?
         locals_for_with.Array :
         typeof Array !== 'undefined' ? Array : undefined, "JSON" in locals_for_with ?
