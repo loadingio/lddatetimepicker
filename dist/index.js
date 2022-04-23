@@ -114,10 +114,14 @@
       }
     });
     this.n.sel.minute.addEventListener('change', function(evt){
-      return this$.time.minute = evt.target.value;
+      this$.time.minute = evt.target.value;
+      this$.cur.minute(this$.time.minute);
+      return this$.update(this$.ucr);
     });
     this.n.sel.hour.addEventListener('change', function(evt){
-      return this$.time.hour = evt.target.value;
+      this$.time.hour = evt.target.value;
+      this$.cur.hour(this$.time.hour);
+      return this$.update(this$.ucr);
     });
     this.n.sel.year.addEventListener('change', function(evt){
       this$.cur = dayjs(new Date(this$.n.sel.year.value, this$.months.indexOf(this$.n.sel.month.value), 1));
@@ -268,7 +272,7 @@
       if (!arguments.length) {
         if (this._enabled.time) {
           ret = dayjs(new Date(this.sel.year(), this.sel.month(), this.sel.date(), this.time.hour, this.time.minute));
-          return ret.toISOString();
+          return ret.format('YYYY-MM-DDTHH:mm:ssZ');
         } else {
           return dayjs(new Date(this.sel.year(), this.sel.month(), this.sel.date())).format('YYYY-MM-DD');
         }

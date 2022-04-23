@@ -95,12 +95,17 @@ lddatetimepicker = (opt = {})->
       @cur = @cur.add 1, "month"
       @update @cur
 
-  @n.sel.minute.addEventListener \change, (evt) ~> @time.minute = evt.target.value
-  @n.sel.hour.addEventListener \change, (evt) ~> @time.hour = evt.target.value
+  @n.sel.minute.addEventListener \change, (evt) ~>
+    @time.minute = evt.target.value
+    @cur.minute @time.minute
+    @update @ucr
+  @n.sel.hour.addEventListener \change, (evt) ~>
+    @time.hour = evt.target.value
+    @cur.hour @time.hour
+    @update @ucr
   @n.sel.year.addEventListener \change, (evt) ~>
     @cur = dayjs new Date(@n.sel.year.value, @months.indexOf(@n.sel.month.value), 1)
     @update @cur
-
   @n.sel.month.addEventListener \change, (evt) ~>
     @cur = dayjs new Date(@n.sel.year.value, @months.indexOf(@n.sel.month.value), 1)
     @update @cur
@@ -188,7 +193,7 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
     if !arguments.length =>
       if @_enabled.time =>
         ret = dayjs new Date( @sel.year!, @sel.month!, @sel.date!, @time.hour, @time.minute )
-        return ret.toISOString!
+        return ret.format('YYYY-MM-DDTHH:mm:ssZ')
       else return dayjs(new Date( @sel.year!, @sel.month!, @sel.date!)).format('YYYY-MM-DD')
     @sel = dayjs v
     @cur = dayjs v
