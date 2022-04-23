@@ -10,6 +10,8 @@
  - fix bug: hour / minute don't work
  - support enter / escape to close
  - let dialog be mutual exclusive
+ - fix bug: incorrect position when scrolling if scroll element is outside the absolute / relative positioned element.
+
 
 ## v0.0.2
 

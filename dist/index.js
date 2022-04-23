@@ -178,7 +178,7 @@
       return this.root.classList.contains('active');
     },
     toggle: function(v){
-      var c, h, n, hb, cb, ref$, x, y, nscroll, nstack, s, stackb, scrollb;
+      var c, h, n, hb, cb, ref$, x, y, nscroll, nstack, countScroll, s, stackb, scrollb, scroll;
       if (arguments.length === 0) {
         v = !this.root.classList.contains('active');
       }
@@ -200,6 +200,7 @@
       cb = c.getBoundingClientRect();
       ref$ = [0, 0], x = ref$[0], y = ref$[1];
       ref$ = [null, null], nscroll = ref$[0], nstack = ref$[1];
+      countScroll = true;
       while (n && n.getAttribute) {
         s = getComputedStyle(n);
         if (n.nodeName === 'BODY' || ['overflow', 'overflow-y', 'overflow-x'].filter(fn$).length) {
@@ -210,6 +211,9 @@
         if (n.nodeName === 'BODY' || s.position !== 'static') {
           if (!nstack) {
             nstack = n;
+            if (!nscroll) {
+              countScroll = false;
+            }
           }
         }
         if (nscroll && nstack) {
@@ -219,15 +223,24 @@
       }
       stackb = nstack.getBoundingClientRect();
       scrollb = nscroll.getBoundingClientRect();
+      scroll = countScroll
+        ? {
+          left: nscroll.scrollLeft,
+          top: nscroll.scrollTop
+        }
+        : {
+          left: 0,
+          top: 0
+        };
       if (hb.y + hb.height + cb.height > scrollb.y + scrollb.height) {
-        y = hb.y - stackb.y - cb.height + nscroll.scrollTop - 2;
+        y = hb.y - stackb.y - cb.height + scroll.top - 2;
       } else {
-        y = hb.y - stackb.y + hb.height + nscroll.scrollTop + 2;
+        y = hb.y - stackb.y + hb.height + scroll.top + 2;
       }
       if (hb.x + cb.width > scrollb.x + scrollb.width) {
-        x = hb.x - stackb.x + hb.width - cb.width + nscroll.scrollLeft;
+        x = hb.x - stackb.x + hb.width - cb.width + scroll.left;
       } else {
-        x = hb.x - stackb.x + nscroll.scrollLeft;
+        x = hb.x - stackb.x + scroll.left;
       }
       c.style.transform = "translate(" + x + "px, " + y + "px)";
       return ref$ = c.style, ref$.top = 0, ref$.left = 0, ref$;

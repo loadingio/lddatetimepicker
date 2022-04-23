@@ -145,25 +145,33 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
     cb = c.getBoundingClientRect!
     [x,y] = [0,0]
     [nscroll, nstack] = [null, null]
+    # should we adjust picker position based on scroll element?
+    count-scroll = true
 
     while n and n.getAttribute
       s = getComputedStyle(n)
       if n.nodeName == \BODY or <[overflow overflow-y overflow-x]>.filter(-> s[it] != \visible).length =>
         if !nscroll => nscroll = n
+      # TODO (should we consider opacity, transform and filter? )
       if n.nodeName == \BODY or s.position != \static =>
-        if !nstack => nstack = n
+        if !nstack =>
+          nstack = n
+          # no scroll element within stacking context.
+          # thus, scroll left/top should not be used when calculating position
+          if !nscroll => count-scroll = false
       if nscroll and nstack => break
       n = n.parentNode
     stackb = nstack.getBoundingClientRect!
     scrollb = nscroll.getBoundingClientRect!
+    scroll = if count-scroll => {left: nscroll.scrollLeft, top: nscroll.scrollTop} else {left: 0, top: 0}
     if hb.y + hb.height + cb.height > scrollb.y + scrollb.height =>
-      y = hb.y - stackb.y - cb.height + nscroll.scrollTop - 2
+      y = hb.y - stackb.y - cb.height + scroll.top - 2
     else
-      y = hb.y - stackb.y + hb.height + nscroll.scrollTop + 2
+      y = hb.y - stackb.y + hb.height + scroll.top + 2
     if hb.x + cb.width > scrollb.x + scrollb.width =>
-      x = hb.x - stackb.x + hb.width - cb.width + nscroll.scrollLeft
+      x = hb.x - stackb.x + hb.width - cb.width + scroll.left
     else
-      x = hb.x - stackb.x + nscroll.scrollLeft
+      x = hb.x - stackb.x + scroll.left
 
     c.style.transform = "translate(#{x}px, #{y}px)"
     c.style <<< top: 0, left: 0
