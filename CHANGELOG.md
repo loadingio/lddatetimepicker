@@ -1,6 +1,6 @@
 # Change Logs
 
-## v0.0.2 (upcoming)
+## v0.0.2
 
  - tweak layout
  - add simple theme

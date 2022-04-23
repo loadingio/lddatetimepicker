@@ -1,6 +1,6 @@
 {
   "name": "lddatetimepicker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "vanilla date/time picker",
   "browser": "dist/index.min.js",
   "main": "dist/index.js",
