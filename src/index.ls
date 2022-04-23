@@ -72,8 +72,9 @@ lddatetimepicker = (opt = {})->
     dh: Array.from(r.querySelectorAll '.lddtp-w') # weakday header
     dc: Array.from(r.querySelectorAll '.lddtp-d') # day cell
 
+  # cur: datetime for current viewport ( used to control when to show )
+  # sel: selected datetime ( the actual picked value )
   [@cur, @today, @sel] = [0 to 2].map -> dayjs!
-  @time = {hour: 0, minute: 0}
 
   @n.sel.month.innerHTML = @months.map((m) -> """<option value="#m">#m</option>""").join('')
   @n.sel.year
@@ -86,7 +87,7 @@ lddatetimepicker = (opt = {})->
   @root.addEventListener \click, (evt) ~>
     n = evt.target
     if n.classList.contains \lddtp-d =>
-      @sel = dayjs new Date(n.date.year, n.date.month, n.date.date)
+      @sel = dayjs new Date(n.date.year, n.date.month, n.date.date, @sel.hour!, @sel.minute!)
       @update @cur
     else if (n.getAttribute(\data-action) == \-) =>
       @cur = @cur.subtract 1, "month"
@@ -96,13 +97,11 @@ lddatetimepicker = (opt = {})->
       @update @cur
 
   @n.sel.minute.addEventListener \change, (evt) ~>
-    @time.minute = evt.target.value
-    @cur.minute @time.minute
-    @update @ucr
+    @sel = @sel.minute evt.target.value
+    @update!
   @n.sel.hour.addEventListener \change, (evt) ~>
-    @time.hour = evt.target.value
-    @cur.hour @time.hour
-    @update @ucr
+    @sel = @sel.hour evt.target.value
+    @update!
   @n.sel.year.addEventListener \change, (evt) ~>
     @cur = dayjs new Date(@n.sel.year.value, @months.indexOf(@n.sel.month.value), 1)
     @update @cur
@@ -113,7 +112,7 @@ lddatetimepicker = (opt = {})->
   if @host =>
     _handler = debounce ~>
       try
-        ret = dayjs(@host.value).toISOString!
+        ret = dayjs(@host.value).format('YYYY-MM-DDTHH:mm:ssZ')
         @host.value = ret
         @value @host.value
       catch e
@@ -180,6 +179,8 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
     [sy,sm,sd] = if !@sel => [null,null,null] else [@sel.year!, @sel.month!, @sel.date!]
     @n.sel.month.value = @months[nm]
     @n.sel.year.value = ny
+    @n.sel.minute.value = @sel.minute!
+    @n.sel.hour.value = @sel.hour!
     @n.dc.map (n,i) ~>
       d = start.add i, \day
       [dy,dm,dd] = [d.year!, d.month!, d.date!]
@@ -192,7 +193,8 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
   value: (v) ->
     if !arguments.length =>
       if @_enabled.time =>
-        ret = dayjs new Date( @sel.year!, @sel.month!, @sel.date!, @time.hour, @time.minute )
+        #ret = dayjs new Date( @sel.year!, @sel.month!, @sel.date!, @sel.hour!, @sel.minute! )
+        ret = dayjs new Date( @sel.year!, @sel.month!, @sel.date!, @sel.hour!, @sel.minute! )
         return ret.format('YYYY-MM-DDTHH:mm:ssZ')
       else return dayjs(new Date( @sel.year!, @sel.month!, @sel.date!)).format('YYYY-MM-DD')
     @sel = dayjs v

@@ -7,6 +7,7 @@
  - separate toggling code into standalone `toggle` api
  - show local timezone offset in host
  - update ui also when hour / minute change
+ - fix bug: hour / minute don't work
 
 
 ## v0.0.2

@@ -82,10 +82,6 @@
     ref$ = [0, 1, 2].map(function(){
       return dayjs();
     }), this.cur = ref$[0], this.today = ref$[1], this.sel = ref$[2];
-    this.time = {
-      hour: 0,
-      minute: 0
-    };
     this.n.sel.month.innerHTML = this.months.map(function(m){
       return "<option value=\"" + m + "\">" + m + "</option>";
     }).join('');
@@ -103,7 +99,7 @@
       var n;
       n = evt.target;
       if (n.classList.contains('lddtp-d')) {
-        this$.sel = dayjs(new Date(n.date.year, n.date.month, n.date.date));
+        this$.sel = dayjs(new Date(n.date.year, n.date.month, n.date.date, this$.sel.hour(), this$.sel.minute()));
         return this$.update(this$.cur);
       } else if (n.getAttribute('data-action') === '-') {
         this$.cur = this$.cur.subtract(1, "month");
@@ -114,14 +110,12 @@
       }
     });
     this.n.sel.minute.addEventListener('change', function(evt){
-      this$.time.minute = evt.target.value;
-      this$.cur.minute(this$.time.minute);
-      return this$.update(this$.ucr);
+      this$.sel = this$.sel.minute(evt.target.value);
+      return this$.update();
     });
     this.n.sel.hour.addEventListener('change', function(evt){
-      this$.time.hour = evt.target.value;
-      this$.cur.hour(this$.time.hour);
-      return this$.update(this$.ucr);
+      this$.sel = this$.sel.hour(evt.target.value);
+      return this$.update();
     });
     this.n.sel.year.addEventListener('change', function(evt){
       this$.cur = dayjs(new Date(this$.n.sel.year.value, this$.months.indexOf(this$.n.sel.month.value), 1));
@@ -135,7 +129,7 @@
       _handler = debounce(function(){
         var ret, e;
         try {
-          ret = dayjs(this$.host.value).toISOString();
+          ret = dayjs(this$.host.value).format('YYYY-MM-DDTHH:mm:ssZ');
           this$.host.value = ret;
           return this$.value(this$.host.value);
         } catch (e$) {
@@ -249,6 +243,8 @@
         : [this.sel.year(), this.sel.month(), this.sel.date()], sy = ref$[0], sm = ref$[1], sd = ref$[2];
       this.n.sel.month.value = this.months[nm];
       this.n.sel.year.value = ny;
+      this.n.sel.minute.value = this.sel.minute();
+      this.n.sel.hour.value = this.sel.hour();
       this.n.dc.map(function(n, i){
         var d, ref$, dy, dm, dd;
         d = start.add(i, 'day');
@@ -271,7 +267,7 @@
       var ret;
       if (!arguments.length) {
         if (this._enabled.time) {
-          ret = dayjs(new Date(this.sel.year(), this.sel.month(), this.sel.date(), this.time.hour, this.time.minute));
+          ret = dayjs(new Date(this.sel.year(), this.sel.month(), this.sel.date(), this.sel.hour(), this.sel.minute()));
           return ret.format('YYYY-MM-DDTHH:mm:ssZ');
         } else {
           return dayjs(new Date(this.sel.year(), this.sel.month(), this.sel.date())).format('YYYY-MM-DD');
