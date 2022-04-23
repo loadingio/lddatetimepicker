@@ -21,11 +21,14 @@
           return;
         }
         c = evt.keyCode;
-        if (!(c === 37 || c === 38 || c === 39 || c === 40)) {
+        if (!(c === 13 || c === 27 || c === 37 || c === 38 || c === 39 || c === 40)) {
           return;
         }
         if (!this$.sel) {
           return;
+        }
+        if (c === 13 || c === 27) {
+          return this$.toggle(false);
         }
         evt.stopPropagation();
         evt.preventDefault();

@@ -28,8 +28,9 @@ lddatetimepicker = (opt = {})->
     keydown: (evt) ~>
       if !(@is-on!) => return
       c = evt.keyCode
-      if !(c in [37 38 39 40]) => return
+      if !(c in [13 27 37 38 39 40]) => return
       if !@sel => return
+      if c in [13 27] => return @toggle false
       evt.stopPropagation!
       evt.preventDefault!
       @sel = if c == 37 => @sel.subtract 1, \day
