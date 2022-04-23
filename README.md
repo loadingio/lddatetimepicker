@@ -31,6 +31,15 @@ Constructor options:
  - `time`: default true. hide and disable time picker if false.
 
 
+## API
+
+ - `isOn()`: return true if lddatetimepicker dialog is on, otherwise return false
+ - `fire(n, ...args)`
+ - `on(n, cb)`
+ - `update()`
+ - `value()`
+
+
 ## License
 
 MIT

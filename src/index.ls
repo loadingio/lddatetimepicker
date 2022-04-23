@@ -24,6 +24,22 @@ lddatetimepicker = (opt = {})->
     mouseup: ~>
       @root.classList.toggle \active, false 
       document.removeEventListener \mouseup, @hdr.mouseup
+      document.removeEventListener \keydown, @hdr.keydown
+    keydown: (evt) ~>
+      console.log 1
+      if !(@is-on!) => return
+      c = evt.keyCode
+      if !(c in [37 38 39 40]) => return
+      if !@sel => return
+      evt.stopPropagation!
+      evt.preventDefault!
+      @sel = if c == 37 => @sel.subtract 1, \day
+      else if c == 39 => @sel.add 1, \day
+      else if c == 38 => @sel.subtract 7, \day
+      else if c == 40 => @sel.add 7, \day
+      @cur = @sel
+      @update!
+
   div = document.createElement(\div)
   if opt.host =>
     @host = if typeof(opt.host) == \string => document.querySelector(opt.host) else opt.host
@@ -33,8 +49,10 @@ lddatetimepicker = (opt = {})->
       if @root.classList.contains \active =>
         @root.classList.remove \active
         document.removeEventListener \mouseup, @hdr.mouseup
+        document.removeEventListener \keydown, @hdr.keydown
         return
       document.addEventListener \mouseup, @hdr.mouseup
+      document.addEventListener \keydown, @hdr.keydown
       @root.classList.toggle \active, true
       c = @root
       h = @host
@@ -101,17 +119,6 @@ lddatetimepicker = (opt = {})->
   @n.sel.hour.innerHTML = [0 to 23].map((h) -> """<option value="#h">#{(''+h).padStart(2,"0")}</option>""").join('')
   @n.sel.minute.innerHTML = [0 to 59].map((m) -> """<option value="#m">#{(''+m).padStart(2,"0")}</option>""").join('')
 
-  document.body.addEventListener \keydown, (evt) ~>
-    c = evt.keyCode
-    if !(c in [37 38 39 40]) => return
-    if !@sel => return
-    @sel = if c == 37 => @sel.subtract 1, \day
-    else if c == 39 => @sel.add 1, \day
-    else if c == 38 => @sel.subtract 7, \day
-    else if c == 40 => @sel.add 7, \day
-    @cur = @sel
-    @update!
-
   @root.addEventListener \click, (evt) ~>
     n = evt.target
     if n.classList.contains \lddtp-d =>
@@ -151,6 +158,7 @@ lddatetimepicker = (opt = {})->
 lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
   on: (n, cb) -> (if Array.isArray(n) => n else [n]).map (n) ~> @evthdr.[][n].push cb
   fire: (n, ...v) -> for cb in (@evthdr[n] or []) => cb.apply @, v
+  is-on: -> @root.classList.contains \active
   update: (now) ->
     now = now or @cur
     [y,m] = [now.year!, now.month!]
