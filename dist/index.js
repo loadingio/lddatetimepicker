@@ -17,7 +17,6 @@
       },
       keydown: function(evt){
         var c;
-        console.log(1);
         if (!this$.isOn()) {
           return;
         }
@@ -48,58 +47,8 @@
         : opt.host;
       this.host.parentNode.insertBefore(div, opt.host.nextSibling);
       this.host.addEventListener('mouseup', function(evt){
-        var c, h, n, hb, cb, ref$, x, y, nscroll, nstack, s, stackb, scrollb;
         evt.stopPropagation();
-        if (this$.root.classList.contains('active')) {
-          this$.root.classList.remove('active');
-          document.removeEventListener('mouseup', this$.hdr.mouseup);
-          document.removeEventListener('keydown', this$.hdr.keydown);
-          return;
-        }
-        document.addEventListener('mouseup', this$.hdr.mouseup);
-        document.addEventListener('keydown', this$.hdr.keydown);
-        this$.root.classList.toggle('active', true);
-        c = this$.root;
-        h = this$.host;
-        n = h.parentNode;
-        hb = h.getBoundingClientRect();
-        cb = c.getBoundingClientRect();
-        ref$ = [0, 0], x = ref$[0], y = ref$[1];
-        ref$ = [null, null], nscroll = ref$[0], nstack = ref$[1];
-        while (n && n.getAttribute) {
-          s = getComputedStyle(n);
-          if (n.nodeName === 'BODY' || ['overflow', 'overflow-y', 'overflow-x'].filter(fn$).length) {
-            if (!nscroll) {
-              nscroll = n;
-            }
-          }
-          if (n.nodeName === 'BODY' || s.position !== 'static') {
-            if (!nstack) {
-              nstack = n;
-            }
-          }
-          if (nscroll && nstack) {
-            break;
-          }
-          n = n.parentNode;
-        }
-        stackb = nstack.getBoundingClientRect();
-        scrollb = nscroll.getBoundingClientRect();
-        if (hb.y + hb.height + cb.height > scrollb.y + scrollb.height) {
-          y = hb.y - stackb.y - cb.height + nscroll.scrollTop - 2;
-        } else {
-          y = hb.y - stackb.y + hb.height + nscroll.scrollTop + 2;
-        }
-        if (hb.x + cb.width > scrollb.x + scrollb.width) {
-          x = hb.x - stackb.x + hb.width - cb.width + nscroll.scrollLeft;
-        } else {
-          x = hb.x - stackb.x + nscroll.scrollLeft;
-        }
-        c.style.transform = "translate(" + x + "px, " + y + "px)";
-        return ref$ = c.style, ref$.top = 0, ref$.left = 0, ref$;
-        function fn$(it){
-          return s[it] !== 'visible';
-        }
+        return this$.toggle();
       });
     } else {
       document.body.appendChild(div);
@@ -224,6 +173,64 @@
     },
     isOn: function(){
       return this.root.classList.contains('active');
+    },
+    toggle: function(v){
+      var c, h, n, hb, cb, ref$, x, y, nscroll, nstack, s, stackb, scrollb;
+      if (arguments.length === 0) {
+        v = !this.root.classList.contains('active');
+      }
+      if (!v) {
+        this.root.classList.toggle('active', false);
+        document.removeEventListener('mouseup', this.hdr.mouseup);
+        document.removeEventListener('keydown', this.hdr.keydown);
+        return;
+      }
+      if (!this.isOn()) {
+        document.addEventListener('mouseup', this.hdr.mouseup);
+        document.addEventListener('keydown', this.hdr.keydown);
+      }
+      this.root.classList.toggle('active', true);
+      c = this.root;
+      h = this.host;
+      n = h.parentNode;
+      hb = h.getBoundingClientRect();
+      cb = c.getBoundingClientRect();
+      ref$ = [0, 0], x = ref$[0], y = ref$[1];
+      ref$ = [null, null], nscroll = ref$[0], nstack = ref$[1];
+      while (n && n.getAttribute) {
+        s = getComputedStyle(n);
+        if (n.nodeName === 'BODY' || ['overflow', 'overflow-y', 'overflow-x'].filter(fn$).length) {
+          if (!nscroll) {
+            nscroll = n;
+          }
+        }
+        if (n.nodeName === 'BODY' || s.position !== 'static') {
+          if (!nstack) {
+            nstack = n;
+          }
+        }
+        if (nscroll && nstack) {
+          break;
+        }
+        n = n.parentNode;
+      }
+      stackb = nstack.getBoundingClientRect();
+      scrollb = nscroll.getBoundingClientRect();
+      if (hb.y + hb.height + cb.height > scrollb.y + scrollb.height) {
+        y = hb.y - stackb.y - cb.height + nscroll.scrollTop - 2;
+      } else {
+        y = hb.y - stackb.y + hb.height + nscroll.scrollTop + 2;
+      }
+      if (hb.x + cb.width > scrollb.x + scrollb.width) {
+        x = hb.x - stackb.x + hb.width - cb.width + nscroll.scrollLeft;
+      } else {
+        x = hb.x - stackb.x + nscroll.scrollLeft;
+      }
+      c.style.transform = "translate(" + x + "px, " + y + "px)";
+      return ref$ = c.style, ref$.top = 0, ref$.left = 0, ref$;
+      function fn$(it){
+        return s[it] !== 'visible';
+      }
     },
     update: function(now){
       var ref$, y, m, start, ny, nm, nd, ty, tm, td, sy, sm, sd;

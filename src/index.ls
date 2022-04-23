@@ -26,7 +26,6 @@ lddatetimepicker = (opt = {})->
       document.removeEventListener \mouseup, @hdr.mouseup
       document.removeEventListener \keydown, @hdr.keydown
     keydown: (evt) ~>
-      console.log 1
       if !(@is-on!) => return
       c = evt.keyCode
       if !(c in [37 38 39 40]) => return
@@ -46,43 +45,8 @@ lddatetimepicker = (opt = {})->
     @host.parentNode.insertBefore div, opt.host.nextSibling
     @host.addEventListener \mouseup, (evt) ~>
       evt.stopPropagation!
-      if @root.classList.contains \active =>
-        @root.classList.remove \active
-        document.removeEventListener \mouseup, @hdr.mouseup
-        document.removeEventListener \keydown, @hdr.keydown
-        return
-      document.addEventListener \mouseup, @hdr.mouseup
-      document.addEventListener \keydown, @hdr.keydown
-      @root.classList.toggle \active, true
-      c = @root
-      h = @host
-      n = h.parentNode
-      hb = h.getBoundingClientRect!
-      cb = c.getBoundingClientRect!
-      [x,y] = [0,0]
-      [nscroll, nstack] = [null, null]
+      @toggle!
 
-      while n and n.getAttribute
-        s = getComputedStyle(n)
-        if n.nodeName == \BODY or <[overflow overflow-y overflow-x]>.filter(-> s[it] != \visible).length =>
-          if !nscroll => nscroll = n
-        if n.nodeName == \BODY or s.position != \static =>
-          if !nstack => nstack = n
-        if nscroll and nstack => break
-        n = n.parentNode
-      stackb = nstack.getBoundingClientRect!
-      scrollb = nscroll.getBoundingClientRect!
-      if hb.y + hb.height + cb.height > scrollb.y + scrollb.height =>
-        y = hb.y - stackb.y - cb.height + nscroll.scrollTop - 2
-      else
-        y = hb.y - stackb.y + hb.height + nscroll.scrollTop + 2
-      if hb.x + cb.width > scrollb.x + scrollb.width =>
-        x = hb.x - stackb.x + hb.width - cb.width + nscroll.scrollLeft
-      else
-        x = hb.x - stackb.x + nscroll.scrollLeft
-
-      c.style.transform = "translate(#{x}px, #{y}px)"
-      c.style <<< top: 0, left: 0
   else document.body.appendChild div 
   div.innerHTML = html
   @root = r = div.querySelector '.lddtp'
@@ -159,6 +123,48 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
   on: (n, cb) -> (if Array.isArray(n) => n else [n]).map (n) ~> @evthdr.[][n].push cb
   fire: (n, ...v) -> for cb in (@evthdr[n] or []) => cb.apply @, v
   is-on: -> @root.classList.contains \active
+  toggle: (v) ->
+    if arguments.length == 0 => v = !(@root.classList.contains \active)
+    if !v =>
+      @root.classList.toggle \active, false
+      document.removeEventListener \mouseup, @hdr.mouseup
+      document.removeEventListener \keydown, @hdr.keydown
+      return
+    if !@is-on! =>
+      document.addEventListener \mouseup, @hdr.mouseup
+      document.addEventListener \keydown, @hdr.keydown
+    @root.classList.toggle \active, true
+    c = @root
+    h = @host
+    n = h.parentNode
+    hb = h.getBoundingClientRect!
+    cb = c.getBoundingClientRect!
+    [x,y] = [0,0]
+    [nscroll, nstack] = [null, null]
+
+    while n and n.getAttribute
+      s = getComputedStyle(n)
+      if n.nodeName == \BODY or <[overflow overflow-y overflow-x]>.filter(-> s[it] != \visible).length =>
+        if !nscroll => nscroll = n
+      if n.nodeName == \BODY or s.position != \static =>
+        if !nstack => nstack = n
+      if nscroll and nstack => break
+      n = n.parentNode
+    stackb = nstack.getBoundingClientRect!
+    scrollb = nscroll.getBoundingClientRect!
+    if hb.y + hb.height + cb.height > scrollb.y + scrollb.height =>
+      y = hb.y - stackb.y - cb.height + nscroll.scrollTop - 2
+    else
+      y = hb.y - stackb.y + hb.height + nscroll.scrollTop + 2
+    if hb.x + cb.width > scrollb.x + scrollb.width =>
+      x = hb.x - stackb.x + hb.width - cb.width + nscroll.scrollLeft
+    else
+      x = hb.x - stackb.x + nscroll.scrollLeft
+
+    c.style.transform = "translate(#{x}px, #{y}px)"
+    c.style <<< top: 0, left: 0
+
+
   update: (now) ->
     now = now or @cur
     [y,m] = [now.year!, now.month!]

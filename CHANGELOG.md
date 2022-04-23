@@ -4,6 +4,7 @@
 
  - add `isOn` API for checking if dialog is active or not
  - handle key event only if dialog is on
+ - separate toggling code into standalone `toggle` api
 
 
 ## v0.0.2
