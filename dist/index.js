@@ -208,7 +208,12 @@
       countScroll = true;
       while (n && n.getAttribute) {
         s = getComputedStyle(n);
-        if (n.nodeName === 'BODY' || ['overflow', 'overflow-y', 'overflow-x'].filter(fn$).length) {
+        if (n.nodeName === 'BODY') {
+          if (!nscroll) {
+            nscroll = document.scrollingElement;
+          }
+        }
+        if (['overflow', 'overflow-y', 'overflow-x'].filter(fn$).length) {
           if (!nscroll) {
             nscroll = n;
           }
@@ -228,24 +233,19 @@
       }
       stackb = nstack.getBoundingClientRect();
       scrollb = nscroll.getBoundingClientRect();
-      scroll = countScroll
-        ? {
-          left: nscroll.scrollLeft,
-          top: nscroll.scrollTop
-        }
-        : {
-          left: 0,
-          top: 0
-        };
-      if (hb.y + hb.height + cb.height > scrollb.y + scrollb.height) {
-        y = hb.y - stackb.y - cb.height + scroll.top - 2;
+      scroll = {
+        left: nscroll.scrollLeft,
+        top: nscroll.scrollTop
+      };
+      if (hb.y + hb.height + cb.height > scrollb.y + scrollb.height + scroll.top) {
+        y = hb.y - stackb.y - cb.height + (countScroll ? scroll.top : 0) - 2;
       } else {
-        y = hb.y - stackb.y + hb.height + scroll.top + 2;
+        y = hb.y - stackb.y + hb.height + (countScroll ? scroll.top : 0) + 2;
       }
-      if (hb.x + cb.width > scrollb.x + scrollb.width) {
-        x = hb.x - stackb.x + hb.width - cb.width + scroll.left;
+      if (hb.x + cb.width > scrollb.x + scrollb.width + scroll.left) {
+        x = hb.x - stackb.x + hb.width - cb.width + (countScroll ? scroll.left : 0);
       } else {
-        x = hb.x - stackb.x + scroll.left;
+        x = hb.x - stackb.x + (countScroll ? scroll.left : 0);
       }
       c.style.transform = "translate(" + x + "px, " + y + "px)";
       return ref$ = c.style, ref$.top = 0, ref$.left = 0, ref$;

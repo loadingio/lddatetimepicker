@@ -154,7 +154,9 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
 
     while n and n.getAttribute
       s = getComputedStyle(n)
-      if n.nodeName == \BODY or <[overflow overflow-y overflow-x]>.filter(-> s[it] != \visible).length =>
+      if n.nodeName == \BODY =>
+        if !nscroll => nscroll = document.scrollingElement
+      if <[overflow overflow-y overflow-x]>.filter(-> s[it] != \visible).length =>
         if !nscroll => nscroll = n
       # TODO (should we consider opacity, transform and filter? )
       if n.nodeName == \BODY or s.position != \static =>
@@ -167,16 +169,15 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
       n = n.parentNode
     stackb = nstack.getBoundingClientRect!
     scrollb = nscroll.getBoundingClientRect!
-    scroll = if count-scroll => {left: nscroll.scrollLeft, top: nscroll.scrollTop} else {left: 0, top: 0}
-    if hb.y + hb.height + cb.height > scrollb.y + scrollb.height =>
-      y = hb.y - stackb.y - cb.height + scroll.top - 2
+    scroll = {left: nscroll.scrollLeft, top: nscroll.scrollTop}
+    if hb.y + hb.height + cb.height > scrollb.y + scrollb.height + scroll.top =>
+      y = hb.y - stackb.y - cb.height + (if count-scroll => scroll.top else 0) - 2
     else
-      y = hb.y - stackb.y + hb.height + scroll.top + 2
-    if hb.x + cb.width > scrollb.x + scrollb.width =>
-      x = hb.x - stackb.x + hb.width - cb.width + scroll.left
+      y = hb.y - stackb.y + hb.height + (if count-scroll => scroll.top else 0) + 2
+    if hb.x + cb.width > scrollb.x + scrollb.width + scroll.left =>
+      x = hb.x - stackb.x + hb.width - cb.width + (if count-scroll => scroll.left else 0)
     else
-      x = hb.x - stackb.x + scroll.left
-
+      x = hb.x - stackb.x + (if count-scroll => scroll.left else 0)
     c.style.transform = "translate(#{x}px, #{y}px)"
     c.style <<< top: 0, left: 0
 

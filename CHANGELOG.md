@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.0.6
+
+ - even if `count-scroll = false` we should still consider scroll position to keep picker in viewport as possible.
+
+
 ## v0.0.5
 
  - support `change` event when value changed.
