@@ -1,6 +1,6 @@
 (function(){
   var html, lddatetimepicker;
-  html = '<div class="lddtp">\n  <div class="lddtp-h">\n    <div class="lddtp-a" data-action="-"></div>\n    <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>\n    <div class="lddtp-f"><input class="lddtp-year-sel" type="number"/></div>\n    <div class="lddtp-a" data-action="+"></div>\n  </div>\n  <div class="lddtp-ds">\n  </div>\n  <div class="lddtp-t">\n    <div class="lddtp-f"><select class="lddtp-hour-sel"></select></div>\n    <div><b>:</b></div>\n    <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>\n  </div>\n</div>';
+  html = '<div class="lddtp"><div>\n  <div class="lddtp-h">\n    <div class="lddtp-a" data-action="-"></div>\n    <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>\n    <div class="lddtp-f"><input class="lddtp-year-sel" type="number"/></div>\n    <div class="lddtp-a" data-action="+"></div>\n  </div>\n  <div class="lddtp-ds">\n  </div>\n  <div class="lddtp-t">\n    <div class="lddtp-f"><select class="lddtp-hour-sel"></select></div>\n    <div><b>:</b></div>\n    <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>\n  </div>\n</div></div>';
   lddatetimepicker = function(opt){
     var div, r, ref$, x$, _handler, e, this$ = this;
     opt == null && (opt = {});
@@ -8,6 +8,7 @@
     this._enabled = {
       time: !(opt.time != null) || opt.time
     };
+    this._fixed = opt.fixed;
     this.evthdr = {};
     this.hdr = {
       mouseup: function(evt){
@@ -51,15 +52,18 @@
       this.host = typeof opt.host === 'string'
         ? document.querySelector(opt.host)
         : opt.host;
-      this.host.parentNode.insertBefore(div, opt.host.nextSibling);
       this.host.addEventListener('mouseup', function(evt){
         return this$.toggle();
       });
-    } else {
-      document.body.appendChild(div);
     }
     div.innerHTML = html;
     this.root = r = div.querySelector('.lddtp');
+    if (this._fixed || !this.host) {
+      document.body.appendChild(div);
+      this.root.classList.toggle('fixed');
+    } else if (this.host) {
+      this.host.parentNode.insertBefore(div, opt.host.nextSibling);
+    }
     this.root.addEventListener('mouseup', function(evt){
       return evt.stopPropagation();
     });
@@ -102,6 +106,9 @@
     }).join('');
     this.root.addEventListener('click', function(evt){
       var n;
+      if (this$._fixed && evt.target.classList.contains('fixed')) {
+        return this$.toggle(false);
+      }
       n = evt.target;
       if (n.classList.contains('lddtp-d')) {
         this$.sel = dayjs(new Date(n.date.year, n.date.month, n.date.date, this$.sel.hour(), this$.sel.minute()));
@@ -198,6 +205,9 @@
         document.addEventListener('keydown', this.hdr.keydown);
       }
       this.root.classList.toggle('active', true);
+      if (this._fixed) {
+        return;
+      }
       c = this.root;
       h = this.host;
       n = h.parentNode;

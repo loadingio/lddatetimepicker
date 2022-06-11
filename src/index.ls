@@ -1,5 +1,5 @@
 html = '''
-<div class="lddtp">
+<div class="lddtp"><div>
   <div class="lddtp-h">
     <div class="lddtp-a" data-action="-"></div>
     <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>
@@ -13,17 +13,18 @@ html = '''
     <div><b>:</b></div>
     <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>
   </div>
-</div>
+</div></div>
 '''
 
 lddatetimepicker = (opt = {})->
   @opt = opt
   @_enabled = time: !(opt.time?) or opt.time
+  @_fixed = opt.fixed
   @evthdr = {}
   @hdr =
     mouseup: (evt) ~>
       if evt.target == @host => return
-      @root.classList.toggle \active, false 
+      @root.classList.toggle \active, false
       document.removeEventListener \mouseup, @hdr.mouseup
       document.removeEventListener \keydown, @hdr.keydown
     keydown: (evt) ~>
@@ -44,12 +45,14 @@ lddatetimepicker = (opt = {})->
   div = document.createElement(\div)
   if opt.host =>
     @host = if typeof(opt.host) == \string => document.querySelector(opt.host) else opt.host
-    @host.parentNode.insertBefore div, opt.host.nextSibling
     @host.addEventListener \mouseup, (evt) ~> @toggle!
-
-  else document.body.appendChild div 
   div.innerHTML = html
   @root = r = div.querySelector '.lddtp'
+  if @_fixed or !@host =>
+    document.body.appendChild div
+    @root.classList.toggle \fixed
+  else if @host => @host.parentNode.insertBefore div, opt.host.nextSibling
+
   @root.addEventListener \mouseup, (evt) -> evt.stopPropagation!
   @n =
     ds: r.querySelector '.lddtp-ds' # day cell container
@@ -85,6 +88,7 @@ lddatetimepicker = (opt = {})->
   @n.sel.minute.innerHTML = [0 to 59].map((m) -> """<option value="#m">#{(''+m).padStart(2,"0")}</option>""").join('')
 
   @root.addEventListener \click, (evt) ~>
+    if @_fixed and evt.target.classList.contains(\fixed) => return @toggle false
     n = evt.target
     if n.classList.contains \lddtp-d =>
       @sel = dayjs new Date(n.date.year, n.date.month, n.date.date, @sel.hour!, @sel.minute!)
@@ -142,6 +146,9 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
       document.addEventListener \mouseup, @hdr.mouseup
       document.addEventListener \keydown, @hdr.keydown
     @root.classList.toggle \active, true
+
+    if @_fixed => return
+
     c = @root
     h = @host
     n = h.parentNode

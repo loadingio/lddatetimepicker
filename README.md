@@ -29,6 +29,9 @@ Constructor options:
 
  - `host`: host element ( should be an input element, if provided )
  - `time`: default true. hide and disable time picker if false.
+ - `fixed`: default false. true to enabled fixed mode, which:
+   - when toggled, the datetime widget pops up in screen center, and covers the whole screen.
+   - will be forced to true if `host` is not provided.
 
 
 ## API

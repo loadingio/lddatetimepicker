@@ -27,19 +27,41 @@
 .lddtp {
   position: absolute;
   z-index: 100;
+  display: none;
+}
+.lddtp div {
+  user-select: none;
+}
+.lddtp,
+.lddtp.active.fixed > div {
   width: 300px;
   border: 1px solid #d6d7d8;
   border-radius: 0.25em;
   background: #fff;
   box-shadow: 0 3px 5px rgba(0,0,0,0.1);
   cursor: pointer;
-  display: none;
-}
-.lddtp div {
-  user-select: none;
 }
 .lddtp.active {
   display: block;
+}
+.lddtp.active.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  z-index: 2000;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  background: rgba(0,0,0,0.75);
+}
+.lddtp.active.fixed > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 .lddtp-ds {
   height: 250px;

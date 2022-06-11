@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.0.7
+
+ - support `fixed` option for fixed mode. fixed mode is automatically enabled if no host provided.
+
+
 ## v0.0.6
 
  - even if `count-scroll = false` we should still consider scroll position to keep picker in viewport as possible.
