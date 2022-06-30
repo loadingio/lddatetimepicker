@@ -219,8 +219,10 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
         ret = dayjs new Date( @sel.year!, @sel.month!, @sel.date!, @sel.hour!, @sel.minute! )
         return ret.format('YYYY-MM-DDTHH:mm:ssZ')
       else return dayjs(new Date( @sel.year!, @sel.month!, @sel.date!)).format('YYYY-MM-DD')
-    @sel = dayjs v
-    @cur = dayjs v
+    v = dayjs v
+    if !v.isValid! => v = @_last or dayjs!
+    @_last = @cur
+    @sel = @cur = v
     @update!
 
 if module? => module.exports = lddatetimepicker

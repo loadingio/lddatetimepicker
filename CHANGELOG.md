@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.0.8 (upcoming)
+
+ - proper handle invalid input
+
+
 ## v0.0.7
 
  - support `fixed` option for fixed mode. fixed mode is automatically enabled if no host provided.

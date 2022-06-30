@@ -311,8 +311,12 @@
           return dayjs(new Date(this.sel.year(), this.sel.month(), this.sel.date())).format('YYYY-MM-DD');
         }
       }
-      this.sel = dayjs(v);
-      this.cur = dayjs(v);
+      v = dayjs(v);
+      if (!v.isValid()) {
+        v = this._last || dayjs();
+      }
+      this._last = this.cur;
+      this.sel = this.cur = v;
       return this.update();
     }
   });
