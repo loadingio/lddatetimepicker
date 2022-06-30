@@ -19,12 +19,19 @@ html = '''
 lddatetimepicker = (opt = {})->
   @opt = opt
   @_enabled = time: !(opt.time?) or opt.time
-  @_fixed = opt.fixed
+  @_mode = if opt.mode in <[in-place out-place fixed]> => opt.mode
+  else if opt.fixed => \fixed #legacy
+  else if opt.container => \out-place
+  else \in-place
   @evthdr = {}
+  if (_c = opt.container) =>
+    if !(typeof(_c) == \object and _c.is-on and _c.toggle and _c.node) =>
+      throw new Error("[lddatetimepicker] `isOn`, `toggle` and `node` are all required within `container` option.")
+    @ <<< {_toggle: _c.toggle, is-on: _c.is-on, _container: _c.node, _pos: _c.position}
   @hdr =
     mouseup: (evt) ~>
       if evt.target == @host => return
-      @root.classList.toggle \active, false
+      @_toggle false
       document.removeEventListener \mouseup, @hdr.mouseup
       document.removeEventListener \keydown, @hdr.keydown
     keydown: (evt) ~>
@@ -48,7 +55,12 @@ lddatetimepicker = (opt = {})->
     @host.addEventListener \mouseup, (evt) ~> @toggle!
   div.innerHTML = html
   @root = r = div.querySelector '.lddtp'
-  if @_fixed or !@host =>
+  if @_container =>
+    @_container.appendChild div
+    @root.classList.add \static, \bare
+  else if @_mode == \out-place =>
+    document.body.appendChild div
+  else if @_mode == \fixed or !@host =>
     document.body.appendChild div
     @root.classList.toggle \fixed
   else if @host => @host.parentNode.insertBefore div, opt.host.nextSibling
@@ -88,7 +100,7 @@ lddatetimepicker = (opt = {})->
   @n.sel.minute.innerHTML = [0 to 59].map((m) -> """<option value="#m">#{(''+m).padStart(2,"0")}</option>""").join('')
 
   @root.addEventListener \click, (evt) ~>
-    if @_fixed and evt.target.classList.contains(\fixed) => return @toggle false
+    if @_mode == \fixed and evt.target.classList.contains(\fixed) => return @toggle false
     n = evt.target
     if n.classList.contains \lddtp-d =>
       @sel = dayjs new Date(n.date.year, n.date.month, n.date.date, @sel.hour!, @sel.minute!)
@@ -135,19 +147,20 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
   on: (n, cb) -> (if Array.isArray(n) => n else [n]).map (n) ~> @evthdr.[][n].push cb
   fire: (n, ...v) -> for cb in (@evthdr[n] or []) => cb.apply @, v
   is-on: -> @root.classList.contains \active
+  _toggle: (v) -> @root.classList.toggle \active, v
   toggle: (v) ->
-    if arguments.length == 0 => v = !(@root.classList.contains \active)
+    if arguments.length == 0 => v = !@is-on!
     if !v =>
-      @root.classList.toggle \active, false
+      @_toggle false
       document.removeEventListener \mouseup, @hdr.mouseup
       document.removeEventListener \keydown, @hdr.keydown
       return
     if !@is-on! =>
       document.addEventListener \mouseup, @hdr.mouseup
       document.addEventListener \keydown, @hdr.keydown
-    @root.classList.toggle \active, true
-
-    if @_fixed => return
+    @_toggle true
+    # in fixed mode, caller should position container.
+    if @_mode == \fixed => return
 
     c = @root
     h = @host
@@ -177,14 +190,32 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
     stackb = nstack.getBoundingClientRect!
     scrollb = nscroll.getBoundingClientRect!
     scroll = {left: nscroll.scrollLeft, top: nscroll.scrollTop}
+    # root scrolling. we dont have to consider it in fixed mode
+    rscroll = if @_mode == \fixed => {left: 0, top: 0}
+    else {left: document.scrollingElement.scrollLeft, top: document.scrollingElement.scrollTop}
+
+    _cb = if @_container => @_container.getBoundingClientRect! else cb
+    # vx / vy: viewport x and y. for fixed element to correctly position
+    if hb.y + hb.height + _cb.height > window.innerHeight + rscroll.top =>
+      vy = hb.y - _cb.height + rscroll.top - 2
+    else vy = hb.y + hb.height + rscroll.top + 2
+    if hb.x + _cb.width > window.innerWidth + rscroll.left =>
+      vx = hb.x + hb.width - + rscroll.left + _cb.width
+    else vx = hb.x + rscroll.left
+
+    # ix / iy: inside stacking context x and y.
     if hb.y + hb.height + cb.height > scrollb.y + scrollb.height + scroll.top =>
-      y = hb.y - stackb.y - cb.height + (if count-scroll => scroll.top else 0) - 2
+      iy = hb.y - stackb.y - cb.height + (if count-scroll => scroll.top else 0) - 2
     else
-      y = hb.y - stackb.y + hb.height + (if count-scroll => scroll.top else 0) + 2
+      iy = hb.y - stackb.y + hb.height + (if count-scroll => scroll.top else 0) + 2
     if hb.x + cb.width > scrollb.x + scrollb.width + scroll.left =>
-      x = hb.x - stackb.x + hb.width - cb.width + (if count-scroll => scroll.left else 0)
+      ix = hb.x - stackb.x + hb.width - cb.width + (if count-scroll => scroll.left else 0)
     else
-      x = hb.x - stackb.x + (if count-scroll => scroll.left else 0)
+      ix = hb.x - stackb.x + (if count-scroll => scroll.left else 0)
+    # _pos usually are for fixed element, so we by default use `x` and `y` for viewport x and y.
+    if @_pos => return @_pos {x: vx, y: vy, vx, vy, ix, iy}
+    [x, y] = if @_mode == \out-place => [x, y] = [vx, vy]
+    else [ix, iy]
     c.style.transform = "translate(#{x}px, #{y}px)"
     c.style <<< top: 0, left: 0
 

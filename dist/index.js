@@ -2,20 +2,33 @@
   var html, lddatetimepicker;
   html = '<div class="lddtp"><div>\n  <div class="lddtp-h">\n    <div class="lddtp-a" data-action="-"></div>\n    <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>\n    <div class="lddtp-f"><input class="lddtp-year-sel" type="number"/></div>\n    <div class="lddtp-a" data-action="+"></div>\n  </div>\n  <div class="lddtp-ds">\n  </div>\n  <div class="lddtp-t">\n    <div class="lddtp-f"><select class="lddtp-hour-sel"></select></div>\n    <div><b>:</b></div>\n    <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>\n  </div>\n</div></div>';
   lddatetimepicker = function(opt){
-    var div, r, ref$, x$, _handler, e, this$ = this;
+    var ref$, _c, div, r, x$, _handler, e, this$ = this;
     opt == null && (opt = {});
     this.opt = opt;
     this._enabled = {
       time: !(opt.time != null) || opt.time
     };
-    this._fixed = opt.fixed;
+    this._mode = (ref$ = opt.mode) === 'in-place' || ref$ === 'out-place' || ref$ === 'fixed'
+      ? opt.mode
+      : opt.fixed
+        ? 'fixed'
+        : opt.container ? 'out-place' : 'in-place';
     this.evthdr = {};
+    if (_c = opt.container) {
+      if (!(typeof _c === 'object' && _c.isOn && _c.toggle && _c.node)) {
+        throw new Error("[lddatetimepicker] `isOn`, `toggle` and `node` are all required within `container` option.");
+      }
+      this._toggle = _c.toggle;
+      this.isOn = _c.isOn;
+      this._container = _c.node;
+      this._pos = _c.position;
+    }
     this.hdr = {
       mouseup: function(evt){
         if (evt.target === this$.host) {
           return;
         }
-        this$.root.classList.toggle('active', false);
+        this$._toggle(false);
         document.removeEventListener('mouseup', this$.hdr.mouseup);
         return document.removeEventListener('keydown', this$.hdr.keydown);
       },
@@ -58,7 +71,12 @@
     }
     div.innerHTML = html;
     this.root = r = div.querySelector('.lddtp');
-    if (this._fixed || !this.host) {
+    if (this._container) {
+      this._container.appendChild(div);
+      this.root.classList.add('static', 'bare');
+    } else if (this._mode === 'out-place') {
+      document.body.appendChild(div);
+    } else if (this._mode === 'fixed' || !this.host) {
       document.body.appendChild(div);
       this.root.classList.toggle('fixed');
     } else if (this.host) {
@@ -106,7 +124,7 @@
     }).join('');
     this.root.addEventListener('click', function(evt){
       var n;
-      if (this$._fixed && evt.target.classList.contains('fixed')) {
+      if (this$._mode === 'fixed' && evt.target.classList.contains('fixed')) {
         return this$.toggle(false);
       }
       n = evt.target;
@@ -189,13 +207,16 @@
     isOn: function(){
       return this.root.classList.contains('active');
     },
+    _toggle: function(v){
+      return this.root.classList.toggle('active', v);
+    },
     toggle: function(v){
-      var c, h, n, hb, cb, ref$, x, y, nscroll, nstack, countScroll, s, stackb, scrollb, scroll;
+      var c, h, n, hb, cb, ref$, x, y, nscroll, nstack, countScroll, s, stackb, scrollb, scroll, rscroll, _cb, vy, vx, iy, ix;
       if (arguments.length === 0) {
-        v = !this.root.classList.contains('active');
+        v = !this.isOn();
       }
       if (!v) {
-        this.root.classList.toggle('active', false);
+        this._toggle(false);
         document.removeEventListener('mouseup', this.hdr.mouseup);
         document.removeEventListener('keydown', this.hdr.keydown);
         return;
@@ -204,8 +225,8 @@
         document.addEventListener('mouseup', this.hdr.mouseup);
         document.addEventListener('keydown', this.hdr.keydown);
       }
-      this.root.classList.toggle('active', true);
-      if (this._fixed) {
+      this._toggle(true);
+      if (this._mode === 'fixed') {
         return;
       }
       c = this.root;
@@ -247,16 +268,49 @@
         left: nscroll.scrollLeft,
         top: nscroll.scrollTop
       };
-      if (hb.y + hb.height + cb.height > scrollb.y + scrollb.height + scroll.top) {
-        y = hb.y - stackb.y - cb.height + (countScroll ? scroll.top : 0) - 2;
+      rscroll = this._mode === 'fixed'
+        ? {
+          left: 0,
+          top: 0
+        }
+        : {
+          left: document.scrollingElement.scrollLeft,
+          top: document.scrollingElement.scrollTop
+        };
+      _cb = this._container ? this._container.getBoundingClientRect() : cb;
+      if (hb.y + hb.height + _cb.height > window.innerHeight + rscroll.top) {
+        vy = hb.y - _cb.height + rscroll.top - 2;
       } else {
-        y = hb.y - stackb.y + hb.height + (countScroll ? scroll.top : 0) + 2;
+        vy = hb.y + hb.height + rscroll.top + 2;
+      }
+      if (hb.x + _cb.width > window.innerWidth + rscroll.left) {
+        vx = hb.x + hb.width - +rscroll.left + _cb.width;
+      } else {
+        vx = hb.x + rscroll.left;
+      }
+      if (hb.y + hb.height + cb.height > scrollb.y + scrollb.height + scroll.top) {
+        iy = hb.y - stackb.y - cb.height + (countScroll ? scroll.top : 0) - 2;
+      } else {
+        iy = hb.y - stackb.y + hb.height + (countScroll ? scroll.top : 0) + 2;
       }
       if (hb.x + cb.width > scrollb.x + scrollb.width + scroll.left) {
-        x = hb.x - stackb.x + hb.width - cb.width + (countScroll ? scroll.left : 0);
+        ix = hb.x - stackb.x + hb.width - cb.width + (countScroll ? scroll.left : 0);
       } else {
-        x = hb.x - stackb.x + (countScroll ? scroll.left : 0);
+        ix = hb.x - stackb.x + (countScroll ? scroll.left : 0);
       }
+      if (this._pos) {
+        return this._pos({
+          x: vx,
+          y: vy,
+          vx: vx,
+          vy: vy,
+          ix: ix,
+          iy: iy
+        });
+      }
+      ref$ = this._mode === 'out-place'
+        ? (ref$ = [vx, vy], x = ref$[0], y = ref$[1], ref$)
+        : [ix, iy], x = ref$[0], y = ref$[1];
       c.style.transform = "translate(" + x + "px, " + y + "px)";
       return ref$ = c.style, ref$.top = 0, ref$.left = 0, ref$;
       function fn$(it){

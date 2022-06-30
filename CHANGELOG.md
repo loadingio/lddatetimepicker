@@ -1,8 +1,13 @@
 # Change Logs
 
-## v0.0.8 (upcoming)
+## v0.0.8
 
  - proper handle invalid input
+ - add `mode` with following mode supported:
+   - `in-place`: default value. widget is inserted after `host`.
+   - `out-place`: widget is inserted under `document.body`. 
+   - `fixed`: widget is inserted under `document.body`, with fixed position style.
+ - support `container` option for customized modal window.
 
 
 ## v0.0.7
