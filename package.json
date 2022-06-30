@@ -1,10 +1,12 @@
 {
   "name": "lddatetimepicker",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "vanilla date/time picker",
   "browser": "dist/index.min.js",
   "main": "dist/index.js",
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "start": "npx server -r web -o true"
   },
@@ -13,7 +15,13 @@
     "type": "git",
     "url": "https://github.com/loadingio/lddatetimepicker"
   },
-  "keywords": ["date","time","datetime","datepicker","datetimepicker"],
+  "keywords": [
+    "date",
+    "time",
+    "datetime",
+    "datepicker",
+    "datetimepicker"
+  ],
   "author": "zbryikt",
   "license": "MIT",
   "devDependencies": {
@@ -29,7 +37,8 @@
     "proxise": "^1.0.1",
     "stylus": "^0.57.0",
     "uglify-js": "^3.15.3",
-    "uglifycss": "^0.0.29"
+    "uglifycss": "^0.0.29",
+    "zmgr": "^2.2.3"
   },
   "frontendDependencies": {
     "root": "web/static/assets/lib",
@@ -41,6 +50,7 @@
       "bootstrap",
       "ldcover",
       "ldview",
+      "zmgr",
       "proxise"
     ]
   },

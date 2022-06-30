@@ -19,6 +19,7 @@ html = '''
 lddatetimepicker = (opt = {})->
   @opt = opt
   @_enabled = time: !(opt.time?) or opt.time
+  @_zmgr = opt.zmgr or null
   @_mode = if opt.mode in <[in-place out-place fixed]> => opt.mode
   else if opt.fixed => \fixed #legacy
   else if opt.container => \out-place
@@ -147,7 +148,12 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
   on: (n, cb) -> (if Array.isArray(n) => n else [n]).map (n) ~> @evthdr.[][n].push cb
   fire: (n, ...v) -> for cb in (@evthdr[n] or []) => cb.apply @, v
   is-on: -> @root.classList.contains \active
-  _toggle: (v) -> @root.classList.toggle \active, v
+  _toggle: (v) ->
+    set-on = v or (!(v?) and !@is-on!)
+    if @_zmgr =>
+      if set-on => @root.style.zIndex = @_zmgr.add!
+      else @_zmgr.remove @root.style.zIndex
+    @root.classList.toggle \active, set-on
   toggle: (v) ->
     if arguments.length == 0 => v = !@is-on!
     if !v =>

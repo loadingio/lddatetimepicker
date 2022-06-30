@@ -48,6 +48,7 @@ Constructor options:
        - `iy`: suggested y position if mode is `in-place`.
    - by default, mode will be `out-place` with `container` option set.
      - Set `mode` to `fixed` if the container is a fixed element (such as dialog)
+ - `zmgr`: optional. if provided, widget will be auto z-indexing based on this zmgr.
 
 
 ## API

@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.0.9
+
+ - support zmgr for proper z-indexing
+
+
 ## v0.0.8
 
  - proper handle invalid input

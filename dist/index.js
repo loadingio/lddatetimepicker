@@ -8,6 +8,7 @@
     this._enabled = {
       time: !(opt.time != null) || opt.time
     };
+    this._zmgr = opt.zmgr || null;
     this._mode = (ref$ = opt.mode) === 'in-place' || ref$ === 'out-place' || ref$ === 'fixed'
       ? opt.mode
       : opt.fixed
@@ -208,7 +209,16 @@
       return this.root.classList.contains('active');
     },
     _toggle: function(v){
-      return this.root.classList.toggle('active', v);
+      var setOn;
+      setOn = v || (!(v != null) && !this.isOn());
+      if (this._zmgr) {
+        if (setOn) {
+          this.root.style.zIndex = this._zmgr.add();
+        } else {
+          this._zmgr.remove(this.root.style.zIndex);
+        }
+      }
+      return this.root.classList.toggle('active', setOn);
     },
     toggle: function(v){
       var c, h, n, hb, cb, ref$, x, y, nscroll, nstack, countScroll, s, stackb, scrollb, scroll, rscroll, _cb, vy, vx, iy, ix;
