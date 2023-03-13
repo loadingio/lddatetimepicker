@@ -1,5 +1,11 @@
 # Change Logs
 
+## v0.0.10
+
+ - add a close button
+ - upgrade dev dependencies
+
+
 ## v0.0.9
 
  - support zmgr for proper z-indexing

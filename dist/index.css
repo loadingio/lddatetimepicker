@@ -131,3 +131,15 @@
   outline: 0;
   text-align: center;
 }
+.lddtp-c {
+  text-align: center;
+  padding: 0.5em;
+  font-weight: bold;
+  font-size: 0.75em;
+  background: #f7f8f9;
+  border-radius: 0.25em;
+}
+.lddtp-c:before {
+  content: "OK";
+  display: block;
+}

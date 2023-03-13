@@ -13,6 +13,7 @@ html = '''
     <div><b>:</b></div>
     <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>
   </div>
+  <div class="lddtp-c"></div>
 </div></div>
 '''
 
@@ -112,6 +113,7 @@ lddatetimepicker = (opt = {})->
     else if (n.getAttribute(\data-action) == \+) =>
       @cur = @cur.add 1, "month"
       @update @cur
+    else if n.classList.contains \lddtp-c => @toggle false
 
   @n.sel.minute.addEventListener \change, (evt) ~>
     @sel = @sel.minute evt.target.value

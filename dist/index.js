@@ -1,6 +1,6 @@
 (function(){
   var html, lddatetimepicker;
-  html = '<div class="lddtp"><div>\n  <div class="lddtp-h">\n    <div class="lddtp-a" data-action="-"></div>\n    <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>\n    <div class="lddtp-f"><input class="lddtp-year-sel" type="number"/></div>\n    <div class="lddtp-a" data-action="+"></div>\n  </div>\n  <div class="lddtp-ds">\n  </div>\n  <div class="lddtp-t">\n    <div class="lddtp-f"><select class="lddtp-hour-sel"></select></div>\n    <div><b>:</b></div>\n    <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>\n  </div>\n</div></div>';
+  html = '<div class="lddtp"><div>\n  <div class="lddtp-h">\n    <div class="lddtp-a" data-action="-"></div>\n    <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>\n    <div class="lddtp-f"><input class="lddtp-year-sel" type="number"/></div>\n    <div class="lddtp-a" data-action="+"></div>\n  </div>\n  <div class="lddtp-ds">\n  </div>\n  <div class="lddtp-t">\n    <div class="lddtp-f"><select class="lddtp-hour-sel"></select></div>\n    <div><b>:</b></div>\n    <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>\n  </div>\n  <div class="lddtp-c"></div>\n</div></div>';
   lddatetimepicker = function(opt){
     var ref$, _c, div, r, x$, _handler, e, this$ = this;
     opt == null && (opt = {});
@@ -138,6 +138,8 @@
       } else if (n.getAttribute('data-action') === '+') {
         this$.cur = this$.cur.add(1, "month");
         return this$.update(this$.cur);
+      } else if (n.classList.contains('lddtp-c')) {
+        return this$.toggle(false);
       }
     });
     this.n.sel.minute.addEventListener('change', function(evt){
