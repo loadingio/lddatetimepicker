@@ -29,6 +29,7 @@ Constructor options:
 
  - `host`: host element ( should be an input element, if provided )
  - `time`: default true. hide and disable time picker if false.
+ - `suppress`: default false. suppress popup when clicking host if true.
  - `fixed`: (deprecated) default false. true to enabled fixed mode.
  - `mode`: either `in-place`, `out-place` or `fixed`.
    - `fixed`:
@@ -58,6 +59,8 @@ Constructor options:
  - `on(n, cb)`
  - `update()`
  - `value()`
+ - `config(opt)`: update configuration. following options are supported:
+   - `suppress`: see constructor option for this option.
 
 
 ## License

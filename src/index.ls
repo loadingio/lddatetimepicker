@@ -19,6 +19,7 @@ html = '''
 
 lddatetimepicker = (opt = {})->
   @opt = opt
+  @_suppress = opt.suppress
   @_enabled = time: !(opt.time?) or opt.time
   @_zmgr = opt.zmgr or null
   @_mode = if opt.mode in <[in-place out-place fixed]> => opt.mode
@@ -54,7 +55,7 @@ lddatetimepicker = (opt = {})->
   div = document.createElement(\div)
   if opt.host =>
     @host = if typeof(opt.host) == \string => document.querySelector(opt.host) else opt.host
-    @host.addEventListener \mouseup, (evt) ~> @toggle!
+    @host.addEventListener \mouseup, (evt) ~> if !@_suppress => @toggle!
   div.innerHTML = html
   @root = r = div.querySelector '.lddtp'
   if @_container =>
@@ -263,6 +264,8 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
     @_last = @cur
     @sel = @cur = v
     @update!
+  config: (cfg = {}) -> @_suppress = cfg.suppress
+
 
 if module? => module.exports = lddatetimepicker
 else if window? => window.lddatetimepicker = lddatetimepicker

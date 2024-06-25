@@ -1,5 +1,11 @@
 # Change Logs
 
+## v0.0.11
+
+ - add `config` api
+ - add `suppress` option
+
+
 ## v0.0.10
 
  - add a close button

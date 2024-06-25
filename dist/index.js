@@ -5,6 +5,7 @@
     var ref$, _c, div, r, x$, _handler, e, this$ = this;
     opt == null && (opt = {});
     this.opt = opt;
+    this._suppress = opt.suppress;
     this._enabled = {
       time: !(opt.time != null) || opt.time
     };
@@ -67,7 +68,9 @@
         ? document.querySelector(opt.host)
         : opt.host;
       this.host.addEventListener('mouseup', function(evt){
-        return this$.toggle();
+        if (!this$._suppress) {
+          return this$.toggle();
+        }
       });
     }
     div.innerHTML = html;
@@ -384,6 +387,10 @@
       this._last = this.cur;
       this.sel = this.cur = v;
       return this.update();
+    },
+    config: function(cfg){
+      cfg == null && (cfg = {});
+      return this._suppress = cfg.suppress;
     }
   });
   if (typeof module != 'undefined' && module !== null) {
