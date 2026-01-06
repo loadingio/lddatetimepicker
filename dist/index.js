@@ -99,7 +99,6 @@
         minute: r.querySelector('.lddtp-minute-sel')
       }
     };
-    this.n.t.style.display = this._enabled.time ? '' : 'none';
     this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     this.wdays = ['SUN', 'MON', 'TUE', 'WED', 'THR', 'FRI', 'SAT'];
     this.n.ds.innerHTML = [0, 1, 2, 3, 4, 5, 6].map(function(w){
@@ -327,7 +326,10 @@
         ? (ref$ = [vx, vy], x = ref$[0], y = ref$[1], ref$)
         : [ix, iy], x = ref$[0], y = ref$[1];
       c.style.transform = "translate(" + x + "px, " + y + "px)";
-      return ref$ = c.style, ref$.top = 0, ref$.left = 0, ref$;
+      ref$ = c.style;
+      ref$.top = 0;
+      ref$.left = 0;
+      return this.render();
       function fn$(it){
         return s[it] !== 'visible';
       }
@@ -390,7 +392,16 @@
     },
     config: function(cfg){
       cfg == null && (cfg = {});
-      return this._suppress = cfg.suppress;
+      if (cfg.suppress != null) {
+        this._suppress = cfg.suppress;
+      }
+      if (cfg.time != null) {
+        this._enabled.time = cfg.time;
+        return this.render();
+      }
+    },
+    render: function(){
+      return this.n.t.style.display = this._enabled.time ? '' : 'none';
     }
   });
   if (typeof module != 'undefined' && module !== null) {

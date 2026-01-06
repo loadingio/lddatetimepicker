@@ -78,7 +78,6 @@ lddatetimepicker = (opt = {})->
       hour: r.querySelector('.lddtp-hour-sel')
       minute: r.querySelector('.lddtp-minute-sel')
 
-  @n.t.style.display = if @_enabled.time => '' else \none
   @months = <[Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec]>
   @wdays = <[SUN MON TUE WED THR FRI SAT]>
 
@@ -227,6 +226,7 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
     else [ix, iy]
     c.style.transform = "translate(#{x}px, #{y}px)"
     c.style <<< top: 0, left: 0
+    @render!
 
   update: (now) ->
     now = now or @cur
@@ -264,7 +264,13 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
     @_last = @cur
     @sel = @cur = v
     @update!
-  config: (cfg = {}) -> @_suppress = cfg.suppress
+  config: (cfg = {}) ->
+    if cfg.suppress? => @_suppress = cfg.suppress
+    if cfg.time? =>
+      @_enabled.time = cfg.time
+      @render!
+  render: ->
+    @n.t.style.display = if @_enabled.time => '' else \none
 
 
 if module? => module.exports = lddatetimepicker
