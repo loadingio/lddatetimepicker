@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.0.12
+
+ - support config with time option
+
+
 ## v0.0.11
 
  - add `config` api
