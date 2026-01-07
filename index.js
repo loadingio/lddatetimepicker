@@ -391,7 +391,14 @@
       return this.update();
     },
     config: function(cfg){
-      cfg == null && (cfg = {});
+      if (cfg == null) {
+        return {
+          suppress: !!this._suppress,
+          time: {
+            enabled: !!this._enabled.time
+          }
+        };
+      }
       if (cfg.suppress != null) {
         this._suppress = cfg.suppress;
       }

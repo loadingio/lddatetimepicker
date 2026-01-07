@@ -59,8 +59,11 @@ Constructor options:
  - `on(n, cb)`
  - `update()`
  - `value()`
- - `config(opt)`: update configuration. following options are supported:
-   - `suppress`: see constructor option for this option.
+ - `config(opt)`: update configuration.
+   - following options are supported:
+     - `suppress`: see constructor option for this option.
+     - `time`: see constructor option for `time`
+   - return current config ( `suppress` and `time` ) when calling without option.
 
 
 ## License
