@@ -264,7 +264,8 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
     @_last = @cur
     @sel = @cur = v
     @update!
-  config: (cfg = {}) ->
+  config: (cfg) ->
+    if !cfg? => return {suppress: !!@_suppress, time: enabled: !!@_enabled.time}
     if cfg.suppress? => @_suppress = cfg.suppress
     if cfg.time? =>
       @_enabled.time = cfg.time

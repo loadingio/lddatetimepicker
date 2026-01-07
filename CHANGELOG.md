@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.0.13
+
+ - support getting config by `config` call without parameter.
+
+
 ## v0.0.12
 
  - support config with time option
