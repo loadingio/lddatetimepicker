@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.0.15 (upcoming)
+
+ - upgrade dependencies
+
+
 ## v0.0.14
 
  - fix: `change` is now fired based on the picked value instead of on the host input string.
