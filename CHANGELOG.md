@@ -1,5 +1,12 @@
 # Change Logs
 
+## v0.0.15
+
+ - upgrade dependencies
+ - remove `@loadingio/ldquery` from `dependencies`. it is never referenced by the published code
+   ( which only uses `dayjs`, `debounce` and `zmgr` ), so it is no longer installed by consumers.
+
+
 ## v0.0.14
 
  - fix: `change` is now fired based on the picked value instead of on the host input string.
