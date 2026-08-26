@@ -16,6 +16,7 @@
         ? 'fixed'
         : opt.container ? 'out-place' : 'in-place';
     this.evthdr = {};
+    this._value = null;
     if (_c = opt.container) {
       if (!(typeof _c === 'object' && _c.isOn && _c.toggle && _c.node)) {
         throw new Error("[lddatetimepicker] `isOn`, `toggle` and `node` are all required within `container` option.");
@@ -162,10 +163,8 @@
     });
     if (this.host) {
       _handler = debounce(function(){
-        var ret, e;
+        var e;
         try {
-          ret = dayjs(this$.host.value).format('YYYY-MM-DDTHH:mm:ssZ');
-          this$.host.value = ret;
           return this$.value(this$.host.value);
         } catch (e$) {
           return e = e$;
@@ -176,12 +175,13 @@
     }
     if (this.host && this.host.value) {
       try {
-        this.host.value = dayjs(this.host.value).format('YYYY-MM-DDTHH:mm:ssZ');
+        this.host.value = this._value = dayjs(this.host.value).format('YYYY-MM-DDTHH:mm:ssZ');
         this.value(this.host.value);
       } catch (e$) {
         e = e$;
       }
     } else {
+      this._value = this.value();
       this.update();
     }
     return this;
@@ -335,7 +335,7 @@
       }
     },
     update: function(now){
-      var ref$, y, m, start, ny, nm, nd, ty, tm, td, sy, sm, sd, ov, nv;
+      var ref$, y, m, start, ny, nm, nd, ty, tm, td, sy, sm, sd, nv;
       now = now || this.cur;
       ref$ = [now.year(), now.month()], y = ref$[0], m = ref$[1];
       now = dayjs(new Date(now.year(), now.month(), 1));
@@ -363,13 +363,13 @@
         n.classList.toggle('today', ty === dy && tm === dm && td === dd);
         return n.classList.toggle('selected', sy === dy && sm === dm && sd === dd);
       });
+      nv = this.value();
       if (this.host) {
-        ov = this.host.value;
-        nv = this.value();
         this.host.value = nv;
-        if (ov !== nv) {
-          return this.fire('change', nv);
-        }
+      }
+      if (nv !== this._value) {
+        this._value = nv;
+        return this.fire('change', nv);
       }
     },
     value: function(v){
