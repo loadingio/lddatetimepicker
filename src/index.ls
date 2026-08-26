@@ -27,6 +27,8 @@ lddatetimepicker = (opt = {})->
   else if opt.container => \out-place
   else \in-place
   @evthdr = {}
+  # last value emitted through `change`. used to detect real value change.
+  @_value = null
   if (_c = opt.container) =>
     if !(typeof(_c) == \object and _c.is-on and _c.toggle and _c.node) =>
       throw new Error("[lddatetimepicker] `isOn`, `toggle` and `node` are all required within `container` option.")
@@ -130,19 +132,18 @@ lddatetimepicker = (opt = {})->
 
   if @host =>
     _handler = debounce ~>
-      try
-        ret = dayjs(@host.value).format('YYYY-MM-DDTHH:mm:ssZ')
-        @host.value = ret
-        @value @host.value
+      try @value @host.value
       catch e
     @host.addEventListener \change, _handler
     @host.addEventListener \input, _handler
   if @host and @host.value =>
     try
-      @host.value = dayjs(@host.value).format('YYYY-MM-DDTHH:mm:ssZ')
+      @host.value = @_value = dayjs(@host.value).format('YYYY-MM-DDTHH:mm:ssZ')
       @value @host.value
     catch e
-  else @update!
+  else
+    @_value = @value!
+    @update!
 
   @
 
@@ -248,11 +249,11 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
       n.classList.toggle \dim, (d.month! != m)
       n.classList.toggle \today, (ty == dy and tm == dm and td == dd)
       n.classList.toggle \selected, (sy == dy and sm == dm and sd == dd)
-    if @host =>
-      ov = @host.value
-      nv = @value!
-      @host.value = nv
-      if ov != nv => @fire \change, nv
+    nv = @value!
+    if @host => @host.value = nv
+    if nv != @_value =>
+      @_value = nv
+      @fire \change, nv
   value: (v) ->
     if !arguments.length =>
       if @_enabled.time =>

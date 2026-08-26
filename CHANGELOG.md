@@ -1,5 +1,13 @@
 # Change Logs
 
+## v0.0.14
+
+ - fix: `change` is now fired based on the picked value instead of on the host input string.
+   - typing or pasting a valid datetime into the host input used to update the picker silently,
+     since the input value was written back before `update` compared against it.
+ - fix: `change` is now fired in host-less mode ( `container` without `host` ) as well.
+
+
 ## v0.0.13
 
  - support getting config by `config` call without parameter.
