@@ -1,6 +1,6 @@
 {
   "name": "lddatetimepicker",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "vanilla date/time picker",
   "browser": "dist/index.min.js",
   "main": "dist/index.js",
@@ -45,7 +45,6 @@
     "modules": [
       "@loadingio/bootstrap.ext",
       "@loadingio/debounce.js",
-      "@loadingio/ldquery",
       "dayjs",
       "bootstrap",
       "ldcover",
@@ -53,8 +52,5 @@
       "zmgr",
       "proxise"
     ]
-  },
-  "dependencies": {
-    "@loadingio/ldquery": "^3.0.6"
   }
 }
