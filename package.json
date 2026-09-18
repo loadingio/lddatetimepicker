@@ -27,10 +27,11 @@
   "devDependencies": {
     "@loadingio/bootstrap.ext": "^0.0.12",
     "@loadingio/debounce.js": "^1.0.1",
-    "@zbryikt/template": "^2.4.3",
+    "@plotdb/guides": "github:plotdb/guides#master",
+    "@zbryikt/template": "^2.5.0",
     "bootstrap": "^4.6.1",
     "dayjs": "^1.11.0",
-    "fedep": "^1.7.6",
+    "fedep": "^1.9.0",
     "ldcover": "^3.6.0",
     "ldview": "^1.7.2",
     "livescript": "^1.6.0",
