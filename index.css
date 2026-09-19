@@ -143,3 +143,20 @@
   content: "OK";
   display: block;
 }
+.lddtp-v {
+  position: absolute;
+  box-sizing: border-box;
+  display: none;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.lddtp-v .lddtp-v-t {
+  margin-left: 0.4em;
+}
+.lddtp-v .lddtp-v-z {
+  margin-left: 0.4em;
+  font-size: 0.75em;
+  opacity: 0.6;
+}

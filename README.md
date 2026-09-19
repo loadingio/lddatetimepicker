@@ -29,6 +29,11 @@ Constructor options:
 
  - `host`: host element ( should be an input element, if provided )
  - `time`: default true. hide and disable time picker if false.
+ - `viewMode`: default false. if true, a prettified, read-only overlay is rendered right on top of
+   the host input, showing the picked value as `2011/01/01 13:05 UTC+8` ( date only if `time` is
+   false ). the host input still carries the raw ISO value, so form submission is unaffected. the
+   overlay steps aside whenever host is focused, so the raw value stays editable by typing, and
+   comes back on blur. requires `host`.
  - `suppress`: default false. suppress popup when clicking host if true.
  - `fixed`: (deprecated) default false. true to enabled fixed mode.
  - `mode`: either `in-place`, `out-place` or `fixed`.
@@ -63,7 +68,8 @@ Constructor options:
    - following options are supported:
      - `suppress`: see constructor option for this option.
      - `time`: see constructor option for `time`
-   - return current config ( `suppress` and `time` ) when calling without option.
+     - `viewMode`: see constructor option for `viewMode`
+   - return current config ( `suppress`, `viewMode` and `time` ) when calling without option.
 
 
 ## License
