@@ -127,3 +127,19 @@
   &:before
     content: "OK"
     display: block
+
+// view mode: read-only, prettified overlay sitting right on top of the host input.
+.lddtp-v
+  position: absolute
+  box-sizing: border-box
+  display: none
+  align-items: center
+  overflow: hidden
+  white-space: nowrap
+  pointer-events: none
+  .lddtp-v-t
+    margin-left: .4em
+  .lddtp-v-z
+    margin-left: .4em
+    font-size: .75em
+    opacity: .6

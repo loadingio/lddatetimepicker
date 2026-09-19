@@ -1,5 +1,13 @@
 # Change Logs
 
+## v0.0.16
+
+ - new `viewMode` option ( default off, also togglable via `config`. requires `host` ):
+   renders a prettified read-only overlay on top of the host input, e.g. `2011/01/01 13:05 UTC+8`,
+   with the utc offset in smaller, dimmed text. the host input keeps its raw ISO value, and the
+   overlay steps aside while host is focused so the value stays editable by typing.
+
+
 ## v0.0.15
 
  - upgrade dependencies

@@ -4,6 +4,10 @@ lddtp2 = new lddatetimepicker host: view.get(\lddtp2), time: false
 lddtp3 = new lddatetimepicker host: view.get(\lddtp3), time: false, mode: \out-place
 lddtp6 = new lddatetimepicker host: view.get(\lddtp6), time: false, mode: \fixed
 
+view.get(\view-mode).addEventListener \change, (evt) ->
+  v = evt.target.checked
+  for p in [lddtp1, lddtp2, lddtp3, lddtp6] => p.config view-mode: v
+
 ldcv-lddtp4 = new ldcover root: view.get(\ldcv-lddtp4)
 ldcv-lddtp5 = new ldcover root: view.get(\ldcv-lddtp5)
 

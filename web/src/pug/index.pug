@@ -21,6 +21,10 @@ html
     .ldcv(ld="ldcv-lddtp5"): .base: .inner.card: .card-body(ld="container-lddtp5")
     +nbr(10)
     .w-1024.rwd.mx-auto.my-4
+      .mb-3.text-center
+        label
+          input(type="checkbox" ld="view-mode")
+          |  view mode ( prettified read-only overlay on host input )
       .border.rounded.mx-auto(style="position:relative;box-shadow:inset 0 2px 4px rgba(0,0,0,.1);width:600px;height:600px;overflow:scroll")
         .p-4(style="width:1000px;height:1000px;background:#f1f2f3")
           .form-group.mb-4(style="top:400px;left:350px")

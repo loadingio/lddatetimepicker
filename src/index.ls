@@ -17,10 +17,19 @@ html = '''
 </div></div>
 '''
 
+# format utc offset from `+08:00` style into `UTC+8` / `UTC+5:30` / `UTC`.
+format-tz = (d) ->
+  z = d.format \Z
+  [sign, hh, mm] = [z.0, +(z.substring 1, 3), +(z.substring 4, 6)]
+  if !hh and !mm => return \UTC
+  "UTC#{sign}#{hh}#{if mm => ":#{(''+mm).padStart 2, '0'}" else ''}"
+
 lddatetimepicker = (opt = {})->
   @opt = opt
   @_suppress = opt.suppress
   @_enabled = time: !(opt.time?) or opt.time
+  # view mode: render a prettified, read-only overlay on top of the host input.
+  @_view-mode = !!opt.view-mode
   @_zmgr = opt.zmgr or null
   @_mode = if opt.mode in <[in-place out-place fixed]> => opt.mode
   else if opt.fixed => \fixed #legacy
@@ -136,6 +145,13 @@ lddatetimepicker = (opt = {})->
       catch e
     @host.addEventListener \change, _handler
     @host.addEventListener \input, _handler
+    # in view mode, step aside while host is focused so it stays typable.
+    @host.addEventListener \focus, ~>
+      @_focused = true
+      @_render-view!
+    @host.addEventListener \blur, ~>
+      @_focused = false
+      @_render-view!
   if @host and @host.value =>
     try
       @host.value = @_value = dayjs(@host.value).format('YYYY-MM-DDTHH:mm:ssZ')
@@ -251,6 +267,7 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
       n.classList.toggle \selected, (sy == dy and sm == dm and sd == dd)
     nv = @value!
     if @host => @host.value = nv
+    @_render-view!
     if nv != @_value =>
       @_value = nv
       @fire \change, nv
@@ -266,13 +283,78 @@ lddatetimepicker.prototype = Object.create(Object.prototype) <<< do
     @sel = @cur = v
     @update!
   config: (cfg) ->
-    if !cfg? => return {suppress: !!@_suppress, time: enabled: !!@_enabled.time}
+    if !cfg? => return {suppress: !!@_suppress, view-mode: !!@_view-mode, time: enabled: !!@_enabled.time}
     if cfg.suppress? => @_suppress = cfg.suppress
-    if cfg.time? =>
-      @_enabled.time = cfg.time
-      @render!
+    if cfg.view-mode? => @_view-mode = !!cfg.view-mode
+    if cfg.time? => @_enabled.time = cfg.time
+    if cfg.time? or cfg.view-mode? => @render!
   render: ->
     @n.t.style.display = if @_enabled.time => '' else \none
+    @_render-view!
+
+  # lazily create the overlay node used by view mode. it lives inside host's
+  # offsetParent so host.offsetLeft / offsetTop can be used directly.
+  _view-node: ->
+    if @_vnode or !@host => return @_vnode
+    p = @host.offsetParent
+    # host ( or its ancestor ) not rendered yet - retry on next render.
+    if !p => return null
+    @_vnode = n = document.createElement \div
+    n.className = \lddtp-v
+    p.appendChild n
+    @_vsync = ~> @_sync-view!
+    window.addEventListener \resize, @_vsync
+    n
+
+  # keep the overlay aligned with, and looking like, the host input.
+  _sync-view: ->
+    if !(@_vnode and @host) => return
+    [n, h] = [@_vnode, @host]
+    s = getComputedStyle h
+    n.style <<< do
+      left: "#{h.offsetLeft}px"
+      top: "#{h.offsetTop}px"
+      width: "#{h.offsetWidth}px"
+      height: "#{h.offsetHeight}px"
+      padding: "#{s.paddingTop} #{s.paddingRight} #{s.paddingBottom} #{s.paddingLeft}"
+      border-width: "#{s.borderTopWidth} #{s.borderRightWidth} #{s.borderBottomWidth} #{s.borderLeftWidth}"
+      border-style: "#{s.borderTopStyle} #{s.borderRightStyle} #{s.borderBottomStyle} #{s.borderLeftStyle}"
+      border-color: "#{s.borderTopColor} #{s.borderRightColor} #{s.borderBottomColor} #{s.borderLeftColor}"
+      border-radius: s.borderRadius
+      background: s.backgroundColor
+      color: @_text-color
+      font-family: s.fontFamily
+      font-size: s.fontSize
+      font-weight: s.fontWeight
+      text-align: s.textAlign
+
+  # drop the overlay and give host its own text back.
+  _hide-view: ->
+    if @_vnode => @_vnode.style.display = \none
+    if @_host-color? =>
+      @host.style.color = @_host-color
+      @_host-color = null
+
+  _render-view: ->
+    if !@host => return
+    if !@_view-mode or @_focused => return @_hide-view!
+    n = @_view-node!
+    if !n => return
+    if !@_host-color? =>
+      # grab the rendered text color before hiding host's own text.
+      @_text-color = getComputedStyle(@host).color
+      @_host-color = @host.style.color or ''
+      @host.style.color = \transparent
+    d = @sel
+    n.innerHTML = (
+      """<span class="lddtp-v-d">#{d.format 'YYYY/MM/DD'}</span>""" +
+      (if @_enabled.time =>
+        """<span class="lddtp-v-t">#{d.format 'HH:mm'}</span>""" +
+        """<span class="lddtp-v-z">#{format-tz d}</span>"""
+      else '')
+    )
+    n.style.display = \flex
+    @_sync-view!
 
 
 if module? => module.exports = lddatetimepicker

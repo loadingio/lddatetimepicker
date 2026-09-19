@@ -1,6 +1,15 @@
 (function(){
-  var html, lddatetimepicker;
+  var html, formatTz, lddatetimepicker;
   html = '<div class="lddtp"><div>\n  <div class="lddtp-h">\n    <div class="lddtp-a" data-action="-"></div>\n    <div class="lddtp-f"><select class="lddtp-month-sel"></select></div>\n    <div class="lddtp-f"><input class="lddtp-year-sel" type="number"/></div>\n    <div class="lddtp-a" data-action="+"></div>\n  </div>\n  <div class="lddtp-ds">\n  </div>\n  <div class="lddtp-t">\n    <div class="lddtp-f"><select class="lddtp-hour-sel"></select></div>\n    <div><b>:</b></div>\n    <div class="lddtp-f"><select class="lddtp-minute-sel"></select></div>\n  </div>\n  <div class="lddtp-c"></div>\n</div></div>';
+  formatTz = function(d){
+    var z, ref$, sign, hh, mm;
+    z = d.format('Z');
+    ref$ = [z[0], +z.substring(1, 3), +z.substring(4, 6)], sign = ref$[0], hh = ref$[1], mm = ref$[2];
+    if (!hh && !mm) {
+      return 'UTC';
+    }
+    return "UTC" + sign + hh + (mm ? ":" + ('' + mm).padStart(2, '0') : '');
+  };
   lddatetimepicker = function(opt){
     var ref$, _c, div, r, x$, _handler, e, this$ = this;
     opt == null && (opt = {});
@@ -9,6 +18,7 @@
     this._enabled = {
       time: !(opt.time != null) || opt.time
     };
+    this._viewMode = !!opt.viewMode;
     this._zmgr = opt.zmgr || null;
     this._mode = (ref$ = opt.mode) === 'in-place' || ref$ === 'out-place' || ref$ === 'fixed'
       ? opt.mode
@@ -172,6 +182,14 @@
       });
       this.host.addEventListener('change', _handler);
       this.host.addEventListener('input', _handler);
+      this.host.addEventListener('focus', function(){
+        this$._focused = true;
+        return this$._renderView();
+      });
+      this.host.addEventListener('blur', function(){
+        this$._focused = false;
+        return this$._renderView();
+      });
     }
     if (this.host && this.host.value) {
       try {
@@ -367,6 +385,7 @@
       if (this.host) {
         this.host.value = nv;
       }
+      this._renderView();
       if (nv !== this._value) {
         this._value = nv;
         return this.fire('change', nv);
@@ -394,6 +413,7 @@
       if (cfg == null) {
         return {
           suppress: !!this._suppress,
+          viewMode: !!this._viewMode,
           time: {
             enabled: !!this._enabled.time
           }
@@ -402,13 +422,93 @@
       if (cfg.suppress != null) {
         this._suppress = cfg.suppress;
       }
+      if (cfg.viewMode != null) {
+        this._viewMode = !!cfg.viewMode;
+      }
       if (cfg.time != null) {
         this._enabled.time = cfg.time;
+      }
+      if (cfg.time != null || cfg.viewMode != null) {
         return this.render();
       }
     },
     render: function(){
-      return this.n.t.style.display = this._enabled.time ? '' : 'none';
+      this.n.t.style.display = this._enabled.time ? '' : 'none';
+      return this._renderView();
+    },
+    _viewNode: function(){
+      var p, n, this$ = this;
+      if (this._vnode || !this.host) {
+        return this._vnode;
+      }
+      p = this.host.offsetParent;
+      if (!p) {
+        return null;
+      }
+      this._vnode = n = document.createElement('div');
+      n.className = 'lddtp-v';
+      p.appendChild(n);
+      this._vsync = function(){
+        return this$._syncView();
+      };
+      window.addEventListener('resize', this._vsync);
+      return n;
+    },
+    _syncView: function(){
+      var ref$, n, h, s;
+      if (!(this._vnode && this.host)) {
+        return;
+      }
+      ref$ = [this._vnode, this.host], n = ref$[0], h = ref$[1];
+      s = getComputedStyle(h);
+      return import$(n.style, {
+        left: h.offsetLeft + "px",
+        top: h.offsetTop + "px",
+        width: h.offsetWidth + "px",
+        height: h.offsetHeight + "px",
+        padding: s.paddingTop + " " + s.paddingRight + " " + s.paddingBottom + " " + s.paddingLeft,
+        borderWidth: s.borderTopWidth + " " + s.borderRightWidth + " " + s.borderBottomWidth + " " + s.borderLeftWidth,
+        borderStyle: s.borderTopStyle + " " + s.borderRightStyle + " " + s.borderBottomStyle + " " + s.borderLeftStyle,
+        borderColor: s.borderTopColor + " " + s.borderRightColor + " " + s.borderBottomColor + " " + s.borderLeftColor,
+        borderRadius: s.borderRadius,
+        background: s.backgroundColor,
+        color: this._textColor,
+        fontFamily: s.fontFamily,
+        fontSize: s.fontSize,
+        fontWeight: s.fontWeight,
+        textAlign: s.textAlign
+      });
+    },
+    _hideView: function(){
+      if (this._vnode) {
+        this._vnode.style.display = 'none';
+      }
+      if (this._hostColor != null) {
+        this.host.style.color = this._hostColor;
+        return this._hostColor = null;
+      }
+    },
+    _renderView: function(){
+      var n, d;
+      if (!this.host) {
+        return;
+      }
+      if (!this._viewMode || this._focused) {
+        return this._hideView();
+      }
+      n = this._viewNode();
+      if (!n) {
+        return;
+      }
+      if (this._hostColor == null) {
+        this._textColor = getComputedStyle(this.host).color;
+        this._hostColor = this.host.style.color || '';
+        this.host.style.color = 'transparent';
+      }
+      d = this.sel;
+      n.innerHTML = ("<span class=\"lddtp-v-d\">" + d.format('YYYY/MM/DD') + "</span>") + (this._enabled.time ? ("<span class=\"lddtp-v-t\">" + d.format('HH:mm') + "</span>") + ("<span class=\"lddtp-v-z\">" + formatTz(d) + "</span>") : '');
+      n.style.display = 'flex';
+      return this._syncView();
     }
   });
   if (typeof module != 'undefined' && module !== null) {
